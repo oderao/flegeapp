@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include flegeapp *.css
+recursive-include flegeapp *.csv
+recursive-include flegeapp *.html
+recursive-include flegeapp *.ico
+recursive-include flegeapp *.js
+recursive-include flegeapp *.json
+recursive-include flegeapp *.md
+recursive-include flegeapp *.png
+recursive-include flegeapp *.py
+recursive-include flegeapp *.svg
+recursive-include flegeapp *.txt
+recursive-exclude flegeapp *.pyc
