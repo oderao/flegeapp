@@ -1,0 +1,211 @@
+{
+ "actions": [],
+ "creation": "2021-09-01 20:05:51.028312",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "patient_bio_section",
+  "title",
+  "patient_id",
+  "column_break_3",
+  "first_name",
+  "last_name",
+  "street_name",
+  "column_break_6",
+  "date_of_birth",
+  "zip_code",
+  "country",
+  "section_break_10",
+  "care_level",
+  "care_box",
+  "contact_information_section",
+  "phone_number",
+  "email_address",
+  "order_information",
+  "order_table",
+  "insurance_information_section",
+  "insurance_company",
+  "insurance_number",
+  "year",
+  "note",
+  "section_break_24",
+  "signature"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title"
+  },
+  {
+   "bold": 1,
+   "fieldname": "patient_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Patient ID"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "street_name",
+   "fieldtype": "Data",
+   "label": "Street Name"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Data",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "zip_code",
+   "fieldtype": "Data",
+   "label": "Zip Code"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "Care Information"
+  },
+  {
+   "fieldname": "care_level",
+   "fieldtype": "Select",
+   "label": "Care Level",
+   "options": "\nLevel 1\nLevel 2\nLevel 3\nLevel 4\nLevel 5\nNeither"
+  },
+  {
+   "fieldname": "care_box",
+   "fieldtype": "Table",
+   "label": "Care Box",
+   "options": "Care Box"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "contact_information_section",
+   "fieldtype": "Section Break",
+   "label": "Contact Information"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Int",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "email_address",
+   "fieldtype": "Data",
+   "label": "Email Address"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "order_information",
+   "fieldtype": "Section Break",
+   "label": "Order Information"
+  },
+  {
+   "fieldname": "order_table",
+   "fieldtype": "Table",
+   "label": "Order Table",
+   "options": "Order Table"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "signature",
+   "fieldtype": "Signature",
+   "label": "Signature"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "insurance_information_section",
+   "fieldtype": "Section Break",
+   "label": "Insurance Information"
+  },
+  {
+   "fieldname": "insurance_company",
+   "fieldtype": "Data",
+   "label": "Insurance Company"
+  },
+  {
+   "fieldname": "insurance_number",
+   "fieldtype": "Data",
+   "label": "Insurance Number"
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Data",
+   "label": "Year"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_24",
+   "fieldtype": "Section Break"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "patient_bio_section",
+   "fieldtype": "Section Break",
+   "label": "Patient Bio"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-09-01 20:33:33.914697",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Flege Patient",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Flege Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_views": 1
+}
