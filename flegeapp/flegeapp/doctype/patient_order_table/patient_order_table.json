@@ -1,12 +1,12 @@
 {
  "actions": [],
- "creation": "2021-09-01 20:02:13.871777",
+ "creation": "2021-09-04 16:29:10.527934",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "sales_order",
-  "order_date"
+  "date"
  ],
  "fields": [
   {
@@ -17,21 +17,19 @@
    "options": "Sales Order"
   },
   {
-   "fieldname": "order_date",
+   "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Date",
-   "options": "transaction_date",
-   "read_only": 1
+   "label": "Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-09-01 20:26:00.716379",
+ "modified": "2021-09-04 16:32:30.104449",
  "modified_by": "Administrator",
  "module": "Flegeapp",
- "name": "Order Table",
+ "name": "Patient Order Table",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

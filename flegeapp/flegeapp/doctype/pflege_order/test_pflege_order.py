@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestCareBox(unittest.TestCase):
+class TestPflegeOrder(unittest.TestCase):
 	pass

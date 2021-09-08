@@ -1,5 +1,5 @@
 {
- "cards_label": "Flege",
+ "cards_label": "Pflege",
  "category": "Modules",
  "charts": [],
  "creation": "2021-09-01 22:00:00.754580",
@@ -17,8 +17,8 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Flege Patient",
-   "link_to": "Flege Patient",
+   "label": "PFlege Patient",
+   "link_to": "Pflege Patient",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -26,14 +26,22 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Sales Order",
-   "link_to": "Sales Order",
+   "label": "Pflege Order",
+   "link_to": "Pflege Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pflege Delivery Note",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2021-09-01 22:02:59.150183",
+ "modified": "2021-09-08 14:05:42.346728",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "FLEGE",
@@ -44,13 +52,19 @@
   {
    "doc_view": "",
    "label": "Flege Patient",
-   "link_to": "Flege Patient",
+   "link_to": "Pflege Patient",
    "type": "DocType"
   },
   {
    "doc_view": "",
-   "label": "Sales Order",
-   "link_to": "Sales Order",
+   "label": "Pflege Order",
+   "link_to": "Pflege Order",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Delivery Note",
+   "link_to": "Pflege Delivery Note",
    "type": "DocType"
   }
  ]
