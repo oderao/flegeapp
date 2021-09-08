@@ -142,3 +142,6 @@ def delete_patient(**args):
 @frappe.whitelist()
 def get_patient(**args):
     pass
+
+def create_delivery_note(**args):
+    pass
