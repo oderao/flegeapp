@@ -256,3 +256,62 @@ def create_delivery_note(args):
     except:
         frappe.log_error(frappe.get_traceback(),'create delivery note failed')
         
+
+def create_shipment(service='',delivery_note=None):
+    """ Create shipments using shipcloud apis """
+    import base64,requests
+    try:
+
+        shipcloud = frappe.get_doc('Shipcloud Settings')
+        if not shipcloud and shipcloud.create_shipment:return
+        #service refers to the kind of shipment service example returns or one day shipping
+
+        url = shipcloud.api_url
+        #convert api to b64 encode
+        api_key = shipcloud.get_password(fieldname='api_key').encode('ascii')
+        api_key = base64.b64encode(api_key)
+        api_key = api_key.decode('ascii')
+        authorization_key = 'Basic ' + api_key
+        headers = {'Authorization':authorization_key}
+        
+        #get patient from delivery note
+
+        patient_id = frappe.db.get_value('Pflege Order',delivery_note.pflege_order,'patient_id')
+        print(patient_id)
+        if patient_id:
+            patient = frappe.get_doc('Pflege Patient',patient_id)
+
+            data = {
+                "to": {
+                    "company": "Receiver Inc.",
+                    "first_name": patient.first_name,
+                    "last_name": patient.last_name,
+                    "street": "Beispielstrasse" or  patient.street_name,
+                    "street_no": patient.street_no or "0",
+                    "city": patient.city or "Hamburg", #use this as default city for now
+                    "zip_code": "22100" or patient.zip_code,
+                    "country": patient.country
+                },
+                "package": {
+                    "weight": shipcloud.weight,
+                    "length": shipcloud.length,
+                    "width": shipcloud.width,
+                    "height": shipcloud.height,
+                    "type": "parcel"
+                },
+                "carrier": shipcloud.carrier,
+                "service": service or "standard",
+                "reference_number": generate_random_reference(),
+                "notification_email": patient.email_address,
+                "create_shipping_label": True
+                }
+            r = requests.post(url,json=data,headers=headers)
+            r.raise_for_status()
+            if r.status_code == 200:
+                return r.json()
+    except:
+        frappe.log_error(frappe.get_traceback(),'create_shipment_failed')
+
+def generate_random_reference():
+    import random,string
+    ref = ''.join(random.choices(string.ascii_uppercase + string.digits, k =10))

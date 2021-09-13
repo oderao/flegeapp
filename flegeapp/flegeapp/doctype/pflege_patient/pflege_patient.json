@@ -12,9 +12,11 @@
   "first_name",
   "last_name",
   "street_name",
+  "street_no",
   "column_break_6",
   "date_of_birth",
   "zip_code",
+  "city",
   "country",
   "section_break_10",
   "care_level",
@@ -43,18 +45,21 @@
    "fieldname": "first_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "First Name"
+   "label": "First Name",
+   "reqd": 1
   },
   {
    "fieldname": "last_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Last Name"
+   "label": "Last Name",
+   "reqd": 1
   },
   {
    "fieldname": "street_name",
    "fieldtype": "Data",
-   "label": "Street Name"
+   "label": "Street Name",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_6",
@@ -68,7 +73,8 @@
   {
    "fieldname": "zip_code",
    "fieldtype": "Data",
-   "label": "Zip Code"
+   "label": "Zip Code",
+   "reqd": 1
   },
   {
    "fieldname": "country",
@@ -171,11 +177,23 @@
    "fieldtype": "Select",
    "label": "Care Box Type",
    "options": "\nCustom\nPre-Selected"
+  },
+  {
+   "fieldname": "street_no",
+   "fieldtype": "Data",
+   "label": "Street No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-08 16:23:47.349162",
+ "modified": "2021-09-13 23:06:44.260438",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Patient",

@@ -6,8 +6,10 @@
  "engine": "InnoDB",
  "field_order": [
   "create_shipment",
+  "api_key",
   "column_break_2",
   "create_shipping_label",
+  "api_url",
   "section_break_2",
   "carrier",
   "width",
@@ -88,12 +90,22 @@
   {
    "fieldname": "column_break_2",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key"
+  },
+  {
+   "fieldname": "api_url",
+   "fieldtype": "Data",
+   "label": "API URL"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-13 17:31:43.988499",
+ "modified": "2021-09-13 19:18:32.492720",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Settings",
@@ -106,6 +118,16 @@
    "print": 1,
    "read": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Flege Admin",
    "share": 1,
    "write": 1
   }

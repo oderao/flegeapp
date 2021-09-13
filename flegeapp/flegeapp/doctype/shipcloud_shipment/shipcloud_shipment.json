@@ -11,7 +11,8 @@
   "tracking_url",
   "column_break_4",
   "label_url",
-  "price"
+  "price",
+  "reference"
  ],
  "fields": [
   {
@@ -47,11 +48,17 @@
    "fieldtype": "Data",
    "label": "Shipment Id",
    "read_only": 1
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "reference",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-13 17:52:24.098015",
+ "modified": "2021-09-13 19:07:48.461460",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Shipment",
@@ -66,6 +73,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Flege Admin",
    "share": 1,
    "write": 1
   }
