@@ -1,3 +1,4 @@
+from erpnext.accounts.doctype import subscription
 import frappe
 import json
 from urllib.parse import urlparse
@@ -17,7 +18,9 @@ def create_flege_app(**args):
 
 @frappe.whitelist()
 def create_patient(**args):
-    ''' Create Patient from data sent from front end '''
+    ''' Create Patient from data sent from front end 
+        patient ---> pflege_order ---> subscription ----> pflege delivery_note 
+    '''
     try:
         #use frappe.request.data as workaround:- v13 convert list values in dict value inappropriately 
         
@@ -43,8 +46,8 @@ def create_patient(**args):
             if pflege_order:
                 order = frappe.get_doc({
                                 'doctype':'Patient Order Table',
-                                'sales_order':pflege_order.name,
-                                'date':pflege_order.transaction_date
+                                'pflege_order':pflege_order.name,
+                                'date':frappe.utils.getdate()
                 })
                 order_table.append(order)
 
@@ -70,6 +73,22 @@ def create_patient(**args):
             patient.save()
             frappe.db.commit()
             if patient:
+                #complete workflow
+                #submit patient order
+                #update pflege_order with patient_id
+                if pflege_order:
+                    pflege_order.patient_id = patient.name
+                    pflege_order.submit()
+                    args.pflege_order = pflege_order
+                #create subscription
+                subscription = create_subscription(pflege_order,carebox=args.care_box)
+                if subscription:
+                    args.subscription = subscription.name
+                #create delivery_note
+                delivery_note = create_delivery_note(args)  
+                    
+
+
                 frappe.local.response['http_status_code'] = 200
                 frappe.local.response['message'] = 'patient created successfully'
                 frappe.local.response['data'] = {'patient_id':patient.name}
@@ -77,6 +96,8 @@ def create_patient(**args):
         frappe.log_error(frappe.get_traceback(),'create_patient')
         frappe.local.response['http_status_code'] = 400
         frappe.local.response['message'] = 'Invalid request,-invalid data sent'
+        frappe.local.response['_server_messages'] = []
+        frappe.local.response['exc'] = ''
 
 def create_pflege_order(**args):
     ''' create sales order from patient order '''
@@ -86,31 +107,34 @@ def create_pflege_order(**args):
         
         #check if customer is already existing:
         if frappe.db.exists('Customer',customer_name):
-            customer = frappe.db.get_value('Customer',customer_name,'name')
+            customer = frappe.get_doc('Customer',customer_name)
         else:
             customer = frappe.new_doc('Customer')
-            customer_name = customer_name
-            customer_group = 'Patient Group'
-            customer_type = 'Individual'
+            frappe.log_error(customer_name)
+            customer.customer_name = customer_name
+            customer.customer_group = 'Patient Group'
+            customer.customer_type = 'Individual'
             customer.save()
         items = []
         for i in args.care_box:
             item = frappe.get_doc({
-                'doctype':'Sales Order Item',
-                'item_code':i['item'],
-                'delivery_date':frappe.utils.getdate(),
-                'qty':i['quantity']
+                'doctype':'Pflege Order Items',
+                'item':i['item'],
+                'rate':0,
+                'quantity':i['quantity'],
+                'amount':0
             })
             items.append(item)
-        sales_order = frappe.get_doc({
-            'doctype':'Sales Order',
-            'customer':customer,
-            'items':items
+        pflege_order = frappe.get_doc({
+            'doctype':'Pflege Order',
+            'customer_name':customer.name,
+            'order_items':items,
+            'order_date':frappe.utils.getdate()
         })
-        sales_order.insert(ignore_permissions=True)
-        return sales_order
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(),'sales_order_creation_failed')
+        pflege_order.insert(ignore_permissions=True)
+        return pflege_order
+    except:
+        frappe.log_error(frappe.get_traceback(),'flege_order_creation_failed')
 
 @frappe.whitelist()
 def update_patient(**args):
@@ -118,20 +142,24 @@ def update_patient(**args):
     url = frappe.request.url
     parsed_url = urlparse(url)
     query_dict = parse_qs(parsed_url.query)
+    if not query_dict:
+        frappe.local.response['http_status_code'] = 417
+        frappe.local.response['message'] = 'Patient update failed; no body params found'
     if query_dict and not query_dict.get('patient_id'):
         frappe.local.response['http_status_code'] = 400
         frappe.local.response['message'] = 'patient_id not in query'
     if query_dict and query_dict.get('patient_id'):
         #check if patient ID exists in the database
         patient_id = query_dict['patient_id'][0]
-        if frappe.db.exists('Flege Patient',patient_id):
+        if frappe.db.exists('Pflege Patient',patient_id):
             #update patient#
             data = frappe.request.data or frappe.local.form_dict
             if data:
-                #update patient_id
-                
-            pass
+                #update patient_id  
+                frappe.local.response['http_status_code'] = 200
+                frappe.local.response['message'] = 'patient-updated successfully'    
         else:
+
             frappe.local.response['http_status_code'] = 404
             frappe.local.response['message'] = 'patient not found'
 
@@ -145,3 +173,86 @@ def get_patient(**args):
 
 def create_delivery_note(**args):
     pass
+
+def create_subscription(pflege_order,carebox=[]):
+
+    try:
+        if carebox:
+            #create subscription_plan for item if not existing
+            #check if plan is existing
+            subscription_plans = []
+            for box in carebox:
+                if frappe.db.exists('Subscription Plan',{'item':box.get('item')}):
+                    #skip creation of subscription plan
+                    print('yes')
+                    plan = frappe.get_doc('Subscription Plan',{'item':box.get('item')})
+                    print(plan.billing_interval,'plan')
+                    subscription_plan_detail = frappe.get_doc({
+                        'doctype':'Subscription Plan Detail',
+                        'plan':plan.name,
+                        'qty':box.get('quantity')
+                    })
+                    subscription_plans.append(subscription_plan_detail)
+                    continue
+            
+                plan_name = 'Buy ' + box.get('item')
+                #add validation for Subscription Plan to validate hook to check if item already exists
+                plan = frappe.get_doc({
+                    'doctype':'Subscription Plan',
+                    'item':box['item'],
+                    'plan_name':plan_name,
+                    'price_determination':'Monthly Rate',
+                    'billing_interval':'Month',
+                    'billing_interval_count':1
+                    
+                })
+                plan.save(ignore_permissions=True)
+
+                subscription_plan_detail = frappe.get_doc({
+                    'doctype':'Subscription Plan Detail',
+                    'plan':plan.name,
+                    'qty':box.get('quantity')
+                })
+               
+                subscription_plans.append(subscription_plan_detail)
+            #create actual subscription
+           
+            subscription = frappe.get_doc({
+                'doctype': 'Subscription',
+                'party_type':'Customer',
+                'party':pflege_order.customer_name,
+                'plans':subscription_plans,
+                'start_date':pflege_order.order_date
+            })
+            subscription.save()
+            return subscription
+            
+    except Exception as e:
+        print(e)
+        frappe.log_error(frappe.get_traceback(),'create_subscrption_failed')
+        
+
+def create_delivery_note(args):
+    try:
+        if not args.subscription:return
+
+        delivery_note = frappe.get_doc({
+            'doctype':'Pflege Delivery Note',
+            'subscription':args.subscription,
+            'pflege_order':args.pflege_order.name,
+            'customer':args.pflege_order.customer_name,
+            'items':args.pflege_order.order_items,
+            'address':args.street_name,
+            'zip_code':args.zip_code,
+            'phone_number':args.phone_number,
+            'delivery_note':args.note,
+            'date':frappe.utils.getdate(),
+            'subscription':args.subscription
+
+        })
+        delivery_note.insert(ignore_permissions=True)
+        return delivery_note
+        
+    except:
+        frappe.log_error(frappe.get_traceback(),'create delivery note failed')
+        

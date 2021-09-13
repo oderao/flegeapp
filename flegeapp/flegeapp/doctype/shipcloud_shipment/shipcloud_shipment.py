@@ -4,11 +4,5 @@
 # import frappe
 from frappe.model.document import Document
 
-class PflegeOrder(Document):
-	
-	def validate(self):
-		pass
-
-	def on_submit(self):
-		#set status to submitted.
-		self.status = 'Submitted'
+class ShipcloudShipment(Document):
+	pass

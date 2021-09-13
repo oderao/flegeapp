@@ -5,28 +5,28 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "sales_order",
+  "pflege_order",
   "date"
  ],
  "fields": [
-  {
-   "fieldname": "sales_order",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Sales Order",
-   "options": "Sales Order"
-  },
   {
    "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Date"
+  },
+  {
+   "fieldname": "pflege_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Pflege Order",
+   "options": "Pflege Order"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-09-04 16:32:30.104449",
+ "modified": "2021-09-08 17:07:53.401492",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Patient Order Table",

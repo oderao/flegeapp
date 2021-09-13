@@ -11,11 +11,11 @@
   "customer_name",
   "column_break_3",
   "order_date",
+  "delivery_note",
   "section_break_4",
   "order_items",
   "section_break_6",
   "total_amount",
-  "delivery_note",
   "amended_from",
   "naming_series"
  ],
@@ -25,10 +25,10 @@
    "fieldtype": "Section Break"
   },
   {
-   "default": "0",
    "fieldname": "customer_name",
-   "fieldtype": "Data",
-   "label": "Customer Name"
+   "fieldtype": "Link",
+   "label": "Customer Name",
+   "options": "Customer"
   },
   {
    "fieldname": "order_date",
@@ -74,7 +74,7 @@
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "PFL-ORD-YYYY.-"
+   "options": "PFL-ORD-.YYYY.-"
   },
   {
    "fieldname": "delivery_note",
@@ -93,7 +93,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-08 16:37:13.780269",
+ "modified": "2021-09-10 11:52:09.902516",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Order",

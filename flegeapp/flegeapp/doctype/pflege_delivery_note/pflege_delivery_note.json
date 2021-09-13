@@ -10,6 +10,8 @@
   "section_break_1",
   "amended_from",
   "pflege_order",
+  "column_break_5",
+  "subscription",
   "section_break_4",
   "delivery_to_section",
   "customer",
@@ -20,9 +22,11 @@
   "order_details_section",
   "items",
   "total_number_of_items",
-  "data_14",
   "status",
-  "dhl_delivery_section"
+  "dhl_delivery_section",
+  "shipcloud_shipment",
+  "data_20",
+  "carrier"
  ],
  "fields": [
   {
@@ -101,10 +105,6 @@
    "label": "Total Number of Items"
   },
   {
-   "fieldname": "data_14",
-   "fieldtype": "Data"
-  },
-  {
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
@@ -113,19 +113,45 @@
   {
    "fieldname": "dhl_delivery_section",
    "fieldtype": "Section Break",
-   "label": "DHL Delivery"
+   "label": "Ship Cloud Delivery"
   },
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
    "options": "PFL-DN-.YYYY.-"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subscription",
+   "fieldtype": "Link",
+   "label": "Subscription",
+   "options": "Subscription"
+  },
+  {
+   "fieldname": "shipcloud_shipment",
+   "fieldtype": "Link",
+   "label": "Shipcloud Shipment",
+   "options": "Shipcloud Shipment"
+  },
+  {
+   "fieldname": "data_20",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "carrier",
+   "fieldtype": "Data",
+   "label": "Carrier",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-08 13:20:37.081339",
+ "modified": "2021-09-13 17:56:15.794723",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",

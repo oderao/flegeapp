@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "autoname": "SPC.#####",
+ "creation": "2021-09-13 17:46:45.510503",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "shipment_id",
+  "carrier_tracking_no",
+  "tracking_url",
+  "column_break_4",
+  "label_url",
+  "price"
+ ],
+ "fields": [
+  {
+   "fieldname": "carrier_tracking_no",
+   "fieldtype": "Data",
+   "label": "Carrier Tracking No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "tracking_url",
+   "fieldtype": "Data",
+   "label": "Tracking Url",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "label_url",
+   "fieldtype": "Data",
+   "label": "Label Url",
+   "read_only": 1
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Data",
+   "label": "Price",
+   "read_only": 1
+  },
+  {
+   "fieldname": "shipment_id",
+   "fieldtype": "Data",
+   "label": "Shipment Id",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-09-13 17:52:24.098015",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Shipcloud Shipment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
