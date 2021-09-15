@@ -42,7 +42,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-09-09 10:51:14.406651",
+ "modified": "2021-09-15 19:28:22.744857",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "FLEGE",
@@ -66,6 +66,24 @@
    "doc_view": "",
    "label": "Pflege Delivery Note",
    "link_to": "Pflege Delivery Note",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Shipcloud Settings",
+   "link_to": "Shipcloud Settings",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Shipcloud Shipment",
+   "link_to": "Shipcloud Shipment",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Subscription",
+   "link_to": "Subscription",
    "type": "DocType"
   }
  ]

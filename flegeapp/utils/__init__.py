@@ -59,6 +59,8 @@ def create_patient(**args):
                 'street_name':args.street_name,
                 'date_of_birth':args.date_of_birth,
                 'zip_code':args.zip_code,
+                'city':args.city,
+                'street_no':args.street_no,
                 'country':args.country,
                 'care_level':args.care_level,
                 'care_box':care_box_items,
@@ -86,9 +88,10 @@ def create_patient(**args):
                     args.subscription = subscription.name
                 #create delivery_note
                 delivery_note = create_delivery_note(args)  
-                    
-
-
+                
+                if delivery_note:
+                    delivery_note.submit()
+                    create_shipment(service='standard',delivery_note=delivery_note.as_dict())
                 frappe.local.response['http_status_code'] = 200
                 frappe.local.response['message'] = 'patient created successfully'
                 frappe.local.response['data'] = {'patient_id':patient.name}
@@ -184,9 +187,7 @@ def create_subscription(pflege_order,carebox=[]):
             for box in carebox:
                 if frappe.db.exists('Subscription Plan',{'item':box.get('item')}):
                     #skip creation of subscription plan
-                    print('yes')
                     plan = frappe.get_doc('Subscription Plan',{'item':box.get('item')})
-                    print(plan.billing_interval,'plan')
                     subscription_plan_detail = frappe.get_doc({
                         'doctype':'Subscription Plan Detail',
                         'plan':plan.name,
@@ -256,7 +257,7 @@ def create_delivery_note(args):
     except:
         frappe.log_error(frappe.get_traceback(),'create delivery note failed')
         
-
+@frappe.whitelist()
 def create_shipment(service='',delivery_note=None):
     """ Create shipments using shipcloud apis """
     import base64,requests
@@ -275,21 +276,21 @@ def create_shipment(service='',delivery_note=None):
         headers = {'Authorization':authorization_key}
         
         #get patient from delivery note
-
-        patient_id = frappe.db.get_value('Pflege Order',delivery_note.pflege_order,'patient_id')
-        print(patient_id)
+        if not isinstance(delivery_note,dict):
+            delivery_note = json.loads(delivery_note)
+        patient_id = frappe.db.get_value('Pflege Order',delivery_note.get('pflege_order'),'patient_id')
         if patient_id:
             patient = frappe.get_doc('Pflege Patient',patient_id)
 
             data = {
                 "to": {
-                    "company": "Receiver Inc.",
+                    "company": "",
                     "first_name": patient.first_name,
                     "last_name": patient.last_name,
-                    "street": "Beispielstrasse" or  patient.street_name,
+                    "street": patient.street_name,
                     "street_no": patient.street_no or "0",
-                    "city": patient.city or "Hamburg", #use this as default city for now
-                    "zip_code": "22100" or patient.zip_code,
+                    "city": patient.city, #use this as default city for now
+                    "zip_code": patient.zip_code,
                     "country": patient.country
                 },
                 "package": {
@@ -300,18 +301,83 @@ def create_shipment(service='',delivery_note=None):
                     "type": "parcel"
                 },
                 "carrier": shipcloud.carrier,
-                "service": service or "standard",
+                "service": service,
                 "reference_number": generate_random_reference(),
                 "notification_email": patient.email_address,
                 "create_shipping_label": True
                 }
+            #add return data if service==returns
+
+            if service == 'returns':
+                #returns should ideally come from the same place it was sent to
+                data['from'] = data['to']
+
             r = requests.post(url,json=data,headers=headers)
-            r.raise_for_status()
             if r.status_code == 200:
-                return r.json()
+                shipment_data = r.json()
+                shipcloud_shipment = create_shipment_data(shipment_data=shipment_data)
+                if shipcloud_shipment:
+                    #update delivery note
+                    frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier',shipcloud.carrier)
+                    
+                    if service == 'standard':
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_created',1)
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_shipment',shipcloud_shipment.get('shipment_name'))
+                        attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_shipment',shipcloud_shipment.get('shipment_name'))
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'delivery_label',shipcloud_shipment.get('shipment_label_url'))
+
+                    if service == 'returns':
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_returned',1)
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_return',shipcloud_shipment.get('shipment_name'))
+                        attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'return_label',shipcloud_shipment.get('shipment_label_url'))
+
+                    #attach shipment label to Delivery Note
+                return {'message':True}
+            else:
+                frappe.log_error(r.content,'shipcloud_api_response')
+                r.raise_for_status()
+                return {'message':False}
     except:
         frappe.log_error(frappe.get_traceback(),'create_shipment_failed')
 
 def generate_random_reference():
     import random,string
     ref = ''.join(random.choices(string.ascii_uppercase + string.digits, k =10))
+    return ref
+
+def create_shipment_data(shipment_data={}):
+
+    if not shipment_data:return
+    shipment = frappe.new_doc('Shipcloud Shipment')
+    shipment.shipment_id = shipment_data.get('id')
+    shipment.carrier_tracking_no = shipment_data.get('carrier_tracking_no')
+    shipment.tracking_url = shipment_data.get('tracking_url')
+    shipment.label_url = shipment_data.get('label_url')
+    shipment.price = shipment_data.get('price')
+    shipment.save()
+    frappe.db.commit()
+    return {'shipment_name':shipment.name,'shipment_label_url':shipment.label_url}
+
+
+def attach_to_delivery_note(delivery_note,label_url,service):
+    fieldname = ''
+    if service == 'standard':
+        fieldname = 'shipping_label'
+    if service == 'return_label':
+        fieldname = 'return_label'
+
+    ret = frappe.get_doc({
+        "doctype": "File",
+        "attached_to_doctype": 'Pflege Delivery Note',
+        "attached_to_name": delivery_note,
+        "attached_to_field":fieldname,
+        "folder": 'Home',
+        "file_name": '',
+        "file_url": label_url,
+        "is_private": 0,
+        
+    })
+    ret.save(ignore_permissions=True)
+    return ret

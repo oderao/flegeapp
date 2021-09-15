@@ -11,6 +11,8 @@
   "amended_from",
   "pflege_order",
   "column_break_5",
+  "shipment_created",
+  "shipment_returned",
   "subscription",
   "section_break_4",
   "delivery_to_section",
@@ -25,8 +27,11 @@
   "status",
   "dhl_delivery_section",
   "shipcloud_shipment",
+  "shipcloud_return",
   "data_20",
-  "carrier"
+  "carrier",
+  "delivery_label",
+  "return_label"
  ],
  "fields": [
   {
@@ -132,6 +137,7 @@
    "options": "Subscription"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "shipcloud_shipment",
    "fieldtype": "Link",
    "label": "Shipcloud Shipment",
@@ -139,19 +145,56 @@
   },
   {
    "fieldname": "data_20",
-   "fieldtype": "Data"
+   "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "carrier",
    "fieldtype": "Data",
    "label": "Carrier",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "shipment_created",
+   "fieldtype": "Check",
+   "label": "Shipment Created"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "shipment_returned",
+   "fieldtype": "Check",
+   "label": "Shipment Returned"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "delivery_label",
+   "fieldtype": "Data",
+   "label": "Delivery Label",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "shipcloud_return",
+   "fieldtype": "Link",
+   "label": "Shipcloud Return",
+   "options": "Shipcloud Shipment",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "return_label",
+   "fieldtype": "Data",
+   "label": "Return Label",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-13 17:56:15.794723",
+ "modified": "2021-09-15 19:14:08.101368",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",
