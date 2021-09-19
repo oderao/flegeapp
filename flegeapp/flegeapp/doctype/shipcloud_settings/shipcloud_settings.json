@@ -20,7 +20,8 @@
   "height",
   "weight",
   "section_break_10",
-  "notification_email"
+  "notification_email",
+  "notification_template"
  ],
  "fields": [
   {
@@ -106,12 +107,18 @@
    "fieldname": "default_company",
    "fieldtype": "Data",
    "label": "Default Company"
+  },
+  {
+   "default": "Hi, {{customer_name}},\n\nA new shipment has been created for you.\n\nPlease see details below\n\nRegards,\n\nPflege Care Box",
+   "fieldname": "notification_template",
+   "fieldtype": "Text Editor",
+   "label": "Notification Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-15 10:12:02.534074",
+ "modified": "2021-09-19 07:28:45.398779",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Settings",

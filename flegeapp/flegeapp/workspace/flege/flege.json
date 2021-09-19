@@ -17,7 +17,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "PFlege Patient",
+   "label": "Pflege Patient",
    "link_to": "Pflege Patient",
    "link_type": "DocType",
    "onboard": 0,
@@ -42,7 +42,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-09-15 19:28:22.744857",
+ "modified": "2021-09-19 08:00:10.367945",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "FLEGE",
@@ -82,8 +82,8 @@
   },
   {
    "doc_view": "",
-   "label": "Subscription",
-   "link_to": "Subscription",
+   "label": "Pflege Subscription",
+   "link_to": "Pflege Subscription",
    "type": "DocType"
   }
  ]

@@ -94,8 +94,7 @@
   {
    "fieldname": "order_details_section",
    "fieldtype": "Section Break",
-   "label": "Order Details",
-   "options": "Pflege Order Items"
+   "label": "Order Details"
   },
   {
    "fieldname": "items",
@@ -134,7 +133,7 @@
    "fieldname": "subscription",
    "fieldtype": "Link",
    "label": "Subscription",
-   "options": "Subscription"
+   "options": "Pflege Subscription"
   },
   {
    "allow_on_submit": 1,
@@ -171,9 +170,8 @@
   {
    "allow_on_submit": 1,
    "fieldname": "delivery_label",
-   "fieldtype": "Data",
-   "label": "Delivery Label",
-   "read_only": 1
+   "fieldtype": "Attach",
+   "label": "Delivery Label"
   },
   {
    "allow_on_submit": 1,
@@ -186,15 +184,14 @@
   {
    "allow_on_submit": 1,
    "fieldname": "return_label",
-   "fieldtype": "Data",
-   "label": "Return Label",
-   "read_only": 1
+   "fieldtype": "Attach",
+   "label": "Return Label"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-15 19:14:08.101368",
+ "modified": "2021-09-19 09:21:11.378157",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",

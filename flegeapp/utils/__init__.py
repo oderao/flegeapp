@@ -3,6 +3,7 @@ import frappe
 import json
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
+from erpnext.stock.utils import get_stock_balance
 
 
 @frappe.whitelist(allow_guest=True)
@@ -63,6 +64,7 @@ def create_patient(**args):
                 'street_no':args.street_no,
                 'country':args.country,
                 'care_level':args.care_level,
+                'care_box_type':args.care_box_type,
                 'care_box':care_box_items,
                 'order_table':order_table,
                 'phone_number':args.phone_number,
@@ -86,12 +88,15 @@ def create_patient(**args):
                 subscription = create_subscription(pflege_order,carebox=args.care_box)
                 if subscription:
                     args.subscription = subscription.name
-                #create delivery_note
-                delivery_note = create_delivery_note(args)  
-                
-                if delivery_note:
-                    delivery_note.submit()
-                    create_shipment(service='standard',delivery_note=delivery_note.as_dict())
+                    #create delivery_note
+                    delivery_note = create_delivery_note(args)  
+                    
+                    if delivery_note:
+                        delivery_note.submit()
+                        create_shipment(service='standard',delivery_note=delivery_note.as_dict())
+                        #update subscription next_subscription date
+                        subscription.submit()
+
                 frappe.local.response['http_status_code'] = 200
                 frappe.local.response['message'] = 'patient created successfully'
                 frappe.local.response['data'] = {'patient_id':patient.name}
@@ -147,7 +152,7 @@ def update_patient(**args):
     query_dict = parse_qs(parsed_url.query)
     if not query_dict:
         frappe.local.response['http_status_code'] = 417
-        frappe.local.response['message'] = 'Patient update failed; no body params found'
+        frappe.local.response['message'] = 'Patient update failed; please add patient id to params'
     if query_dict and not query_dict.get('patient_id'):
         frappe.local.response['http_status_code'] = 400
         frappe.local.response['message'] = 'patient_id not in query'
@@ -174,8 +179,6 @@ def delete_patient(**args):
 def get_patient(**args):
     pass
 
-def create_delivery_note(**args):
-    pass
 
 def create_subscription(pflege_order,carebox=[]):
 
@@ -219,17 +222,16 @@ def create_subscription(pflege_order,carebox=[]):
             #create actual subscription
            
             subscription = frappe.get_doc({
-                'doctype': 'Subscription',
-                'party_type':'Customer',
-                'party':pflege_order.customer_name,
-                'plans':subscription_plans,
-                'start_date':pflege_order.order_date
+                'doctype': 'Pflege Subscription',
+                'party_type':'Pflege Patient',
+                'party':pflege_order.patient_id,
+                'subscription_start_date':pflege_order.order_date,
+                'subscription_end_date':frappe.utils.add_to_date(pflege_order.order_date,years=1),
             })
             subscription.save()
             return subscription
             
     except Exception as e:
-        print(e)
         frappe.log_error(frappe.get_traceback(),'create_subscrption_failed')
         
 
@@ -248,10 +250,24 @@ def create_delivery_note(args):
             'phone_number':args.phone_number,
             'delivery_note':args.note,
             'date':frappe.utils.getdate(),
-            'subscription':args.subscription
 
         })
         delivery_note.insert(ignore_permissions=True)
+
+        #update pflege subscription with delivery note
+
+        table = frappe.get_doc({
+            'doctype':'Pflege Delivery Note Table',
+            'delivery_note':delivery_note.name,
+            'date': delivery_note.date,
+            'parent':args.subscription,
+            'parentfield':'delivery',
+            'parenttype':'Pflege Subscription'
+
+        })
+        table.save()
+       
+        frappe.db.commit()
         return delivery_note
         
     except:
@@ -381,3 +397,39 @@ def attach_to_delivery_note(delivery_note,label_url,service):
     })
     ret.save(ignore_permissions=True)
     return ret
+
+@frappe.whitelist()
+def get_item(**args):
+    """ This gets returns items as a dict"""
+    url = frappe.request.url
+    parsed_url = urlparse(url)
+    query_dict = parse_qs(parsed_url.query)
+    stock_balance = 0
+    
+    if not query_dict:
+        frappe.local.response['http_status_code'] = 417
+        frappe.local.response['message'] = 'Failed to get item; please add item params to url'
+    
+    if query_dict and not query_dict.get('item_name'):
+        frappe.local.response['http_status_code'] = 400
+        frappe.local.response['message'] = 'item_name not in query'
+    
+    if query_dict and query_dict.get('item_name'):
+        #check if item exists in the database
+        item_name = query_dict['item_name'][0]
+        if frappe.db.exists('Item',item_name):
+            item = frappe.get_all('Item',fields=["item_name","standard_rate","thumbnail","website_image"],filters={'disabled':0,'name':item_name})
+            item = item[0]
+            default_warehouse = frappe.db.get_value('Item Default',{'parent':item_name},'default_warehouse')
+            if default_warehouse:
+                stock_balance = get_stock_balance(item_name,default_warehouse)
+            item['stock'] = stock_balance
+            frappe.local.response['http_status_code'] = 200
+            frappe.local.response['message'] = 'Item retrieved successfully' 
+            frappe.local.response['data'] = item
+        else:
+            frappe.local.response['http_status_code'] = 404
+            frappe.local.response['message'] = 'Item not found in Database'
+
+
+    
