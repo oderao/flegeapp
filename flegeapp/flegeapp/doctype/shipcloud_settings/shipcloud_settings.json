@@ -9,6 +9,7 @@
   "api_key",
   "column_break_2",
   "create_shipping_label",
+  "send_email_notification",
   "api_url",
   "section_break_2",
   "default_company",
@@ -113,12 +114,18 @@
    "fieldname": "notification_template",
    "fieldtype": "Text Editor",
    "label": "Notification Template"
+  },
+  {
+   "default": "0",
+   "fieldname": "send_email_notification",
+   "fieldtype": "Check",
+   "label": "Send Email Notification"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-19 07:28:45.398779",
+ "modified": "2021-09-20 11:10:46.995215",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Settings",

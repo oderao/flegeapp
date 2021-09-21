@@ -6,7 +6,11 @@ from frappe.model.document import Document
 
 class PflegeSubscription(Document):
 	
-	def on_submit(self):
+
+	def on_update_after_submit(self):
+		self.reorder_delivery_note_table()
+
+	def before_submit(self):
 		#set next_subscription date
 		self.add_date()
 		
@@ -20,3 +24,11 @@ class PflegeSubscription(Document):
 		if self.subscription_interval == 'Quarterly':
 			date = frappe.utils.add_to_date(self.subscription_start_date,months=3)
 		self.next_subscription_date = date
+	
+	def reorder_delivery_note_table(self):
+		from operator import attrgetter
+		count = 0
+		self.delivery.sort(key = attrgetter('delivery_note'),reverse=True)
+		for delivery in self.delivery:
+			count += 1
+			delivery.idx = count

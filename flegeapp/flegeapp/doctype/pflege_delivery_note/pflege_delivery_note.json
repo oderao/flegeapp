@@ -10,6 +10,7 @@
   "section_break_1",
   "amended_from",
   "pflege_order",
+  "patient_id",
   "column_break_5",
   "shipment_created",
   "shipment_returned",
@@ -154,18 +155,18 @@
    "read_only": 1
   },
   {
-   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "shipment_created",
    "fieldtype": "Check",
-   "label": "Shipment Created"
+   "label": "Shipment Created",
+   "read_only": 1
   },
   {
-   "allow_on_submit": 1,
    "default": "0",
    "fieldname": "shipment_returned",
    "fieldtype": "Check",
-   "label": "Shipment Returned"
+   "label": "Shipment Returned",
+   "read_only": 1
   },
   {
    "allow_on_submit": 1,
@@ -186,12 +187,18 @@
    "fieldname": "return_label",
    "fieldtype": "Attach",
    "label": "Return Label"
+  },
+  {
+   "fieldname": "patient_id",
+   "fieldtype": "Link",
+   "label": "Patient ID",
+   "options": "Pflege Patient"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-19 09:21:11.378157",
+ "modified": "2021-09-21 19:19:52.702533",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",

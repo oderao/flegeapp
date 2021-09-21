@@ -16,7 +16,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item",
-   "options": "Item"
+   "options": "Pflege Item"
   },
   {
    "fieldname": "quantity",
@@ -40,7 +40,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-09-08 13:41:36.992789",
+ "modified": "2021-09-21 11:30:58.994420",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Order Items",

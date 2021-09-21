@@ -42,7 +42,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-09-19 08:00:10.367945",
+ "modified": "2021-09-21 09:30:32.133015",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "FLEGE",
@@ -84,6 +84,18 @@
    "doc_view": "",
    "label": "Pflege Subscription",
    "link_to": "Pflege Subscription",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Item",
+   "link_to": "Pflege Item",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Carebox",
+   "link_to": "Pflege Carebox",
    "type": "DocType"
   }
  ]

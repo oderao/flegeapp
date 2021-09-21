@@ -12,7 +12,8 @@
   "column_break_4",
   "label_url",
   "price",
-  "reference"
+  "reference",
+  "email_sent"
  ],
  "fields": [
   {
@@ -54,11 +55,18 @@
    "fieldtype": "Data",
    "label": "reference",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "email_sent",
+   "fieldtype": "Check",
+   "label": "Email Sent",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-13 19:07:48.461460",
+ "modified": "2021-09-19 18:40:10.954950",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Shipment",

@@ -6,11 +6,19 @@ frappe.ui.form.on('Pflege Order', {
 
 	// }
 	setup: function(frm) {
-		console.log('steup')
 		frm.custom_make_buttons = {
 			'Delivery Note': 'Delivery Note',
 			
 		}
 		
 	},
+	patient_id: function (frm){
+
+		frm.set_query('patient_id', function(frm){
+			return {
+				query:'flegeapp.utils.get_patient_query',
+			}
+
+		})
+	}
 });

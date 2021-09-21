@@ -93,8 +93,10 @@ def create_patient(**args):
                     
                     if delivery_note:
                         delivery_note.submit()
+                        delivery_note.patient_id = patient.name
                         create_shipment(service='standard',delivery_note=delivery_note.as_dict())
                         #update subscription next_subscription date
+                        subscription.reload()
                         subscription.submit()
 
                 frappe.local.response['http_status_code'] = 200
@@ -102,8 +104,8 @@ def create_patient(**args):
                 frappe.local.response['data'] = {'patient_id':patient.name}
     except:
         frappe.log_error(frappe.get_traceback(),'create_patient')
-        frappe.local.response['http_status_code'] = 400
-        frappe.local.response['message'] = 'Invalid request,-invalid data sent'
+        frappe.local.response['http_status_code'] = 500
+        frappe.local.response['message'] = 'Create Patient failed. Invalid Data Passed'
         frappe.local.response['_server_messages'] = []
         frappe.local.response['exc'] = ''
 
@@ -266,7 +268,9 @@ def create_delivery_note(args):
 
         })
         table.save()
-       
+        subscription_doc = frappe.get_doc('Pflege Subscription',args.subscription)
+        subscription_doc.delivery = [table]
+        subscription_doc.save()
         frappe.db.commit()
         return delivery_note
         
@@ -284,15 +288,18 @@ def create_shipment(service='',delivery_note=None):
         #service refers to the kind of shipment service example returns or one day shipping
 
         url = shipcloud.api_url
+        if not service:
+            service = shipcloud.service
         #convert api to b64 encode
         api_key = shipcloud.get_password(fieldname='api_key').encode('ascii')
         api_key = base64.b64encode(api_key)
         api_key = api_key.decode('ascii')
         authorization_key = 'Basic ' + api_key
         headers = {'Authorization':authorization_key}
-        
+        create_shipping_label = bool(shipcloud.create_shipping_label)
+
         #get patient from delivery note
-        if not isinstance(delivery_note,dict):
+        if isinstance(delivery_note,str):
             delivery_note = json.loads(delivery_note)
         patient_id = frappe.db.get_value('Pflege Order',delivery_note.get('pflege_order'),'patient_id')
         if patient_id:
@@ -307,7 +314,7 @@ def create_shipment(service='',delivery_note=None):
                     "street_no": patient.street_no or "0",
                     "city": patient.city, #use this as default city for now
                     "zip_code": patient.zip_code,
-                    "country": patient.country
+                    "country": 'Germany'
                 },
                 "package": {
                     "weight": shipcloud.weight,
@@ -320,7 +327,7 @@ def create_shipment(service='',delivery_note=None):
                 "service": service,
                 "reference_number": generate_random_reference(),
                 "notification_email": patient.email_address,
-                "create_shipping_label": True
+                "create_shipping_label": create_shipping_label
                 }
             #add return data if service==returns
 
@@ -349,7 +356,7 @@ def create_shipment(service='',delivery_note=None):
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'return_label',shipcloud_shipment.get('shipment_label_url'))
 
-                    #attach shipment label to Delivery Note
+                notify_of_shipment(patient_id,shipcloud_shipment.get('shipment_name'))
                 return {'message':True}
             else:
                 frappe.log_error(r.content,'shipcloud_api_response')
@@ -399,37 +406,95 @@ def attach_to_delivery_note(delivery_note,label_url,service):
     return ret
 
 @frappe.whitelist()
-def get_item(**args):
+def get_items(**args):
     """ This gets returns items as a dict"""
     url = frappe.request.url
     parsed_url = urlparse(url)
     query_dict = parse_qs(parsed_url.query)
     stock_balance = 0
-    
-    if not query_dict:
-        frappe.local.response['http_status_code'] = 417
-        frappe.local.response['message'] = 'Failed to get item; please add item params to url'
-    
-    if query_dict and not query_dict.get('item_name'):
-        frappe.local.response['http_status_code'] = 400
-        frappe.local.response['message'] = 'item_name not in query'
-    
-    if query_dict and query_dict.get('item_name'):
-        #check if item exists in the database
-        item_name = query_dict['item_name'][0]
-        if frappe.db.exists('Item',item_name):
-            item = frappe.get_all('Item',fields=["item_name","standard_rate","thumbnail","website_image"],filters={'disabled':0,'name':item_name})
-            item = item[0]
-            default_warehouse = frappe.db.get_value('Item Default',{'parent':item_name},'default_warehouse')
-            if default_warehouse:
-                stock_balance = get_stock_balance(item_name,default_warehouse)
-            item['stock'] = stock_balance
-            frappe.local.response['http_status_code'] = 200
-            frappe.local.response['message'] = 'Item retrieved successfully' 
-            frappe.local.response['data'] = item
+    try:
+
+        # if not query_dict:
+        #     frappe.local.response['http_status_code'] = 417
+        #     frappe.local.response['message'] = 'Failed to get item; please add item params to url'
+        item_data_list = []
+        if query_dict and not query_dict.get('item_name'):
+            frappe.local.response['http_status_code'] = 400
+            frappe.local.response['message'] = 'item_name not in query'
+        
+        
+        if query_dict and query_dict.get('item_name'):
+            #check if item exists in the database
+            item_name = query_dict['item_name'][0]
+            if frappe.db.exists('Item',item_name):
+                item = frappe.get_all('Pflege Item',fields=["item_name","size","price","image","sets"],filters={'name':item_name})
+                
+
+                frappe.local.response['http_status_code'] = 200
+                frappe.local.response['message'] = 'Item retrieved successfully' 
+                frappe.local.response['data'] = item
+            else:
+                frappe.local.response['http_status_code'] = 404
+                frappe.local.response['message'] = 'Item not found in Database'
         else:
-            frappe.local.response['http_status_code'] = 404
-            frappe.local.response['message'] = 'Item not found in Database'
+            #return all items
+            item = frappe.get_all('Pflege Item',fields=["item_name","size","price","image","sets"],)
+            frappe.local.response['http_status_code'] = 200
+            frappe.local.response['message'] = 'Items retrieved successfully' 
+            frappe.local.response['data'] = item
+    except:
+        frappe.log_error(frappe.get_traceback())
+        frappe.local.response['http_status_code'] = 500
+        frappe.local.response['message'] = 'Error retrieving items' 
+        frappe.local.response['exc'] =  ''
+        frappe.local.response['_server_messages'] =  ''
+        
+def notify_of_shipment(patient_id,shipment):
+    
+    #notify_of new_shipments via email
+    if shipment and patient_id:
+        if not frappe.db.get_single_value('Shipcloud Settings','send_email_notification'):return
+        shipment_doc = frappe.get_doc('Shipcloud Shipment',shipment)
+        if shipment_doc.email_sent:return
+        template = frappe.db.get_single_value('Shipcloud Settings','notification_template')
+        notification_email = frappe.db.get_single_value('Shipcloud Settings','notification_email')
+        first_name = frappe.db.get_value('Pflege Patient',patient_id,'first_name')
+        last_name = frappe.db.get_value('Pflege Patient',patient_id,'last_name')
+        email_address = frappe.db.get_value('Pflege Patient',patient_id,'email_address')
+        
+        customer_name = first_name + ' ' + last_name
+        
 
+        template_dict = {"customer_name":customer_name,'label_url':shipment_doc.label_url,
+                         "tracking_url":shipment_doc.tracking_url}
+        recipients = [email_address]
+        cc = [notification_email]
+        message = frappe.render_template(template,template_dict)
+        
+
+        frappe.sendmail(recipients=recipients,message=message,subject="Subscription/Shipment Notification",
+                        cc=cc)
+        frappe.db.set_value('Shipcloud Shipment',shipment,'email_sent',1)
 
     
+
+@frappe.whitelist()
+def get_size(item):
+    size = frappe.db.get_value('Pflege Item',item,'size')
+    return size
+
+@frappe.whitelist()
+def get_carebox_items(carebox):
+
+    items = frappe.get_all('Carebox Items',{'parent':carebox},['*'])
+    return items
+
+@frappe.whitelist()
+def get_patient_query(doctype,txt,seachfield,start,page_len,filters):
+	return frappe.db.sql('''SELECT name,first_name,last_name from `tabPflege Patient`
+						where `{key}` like %(txt)s {cond}
+						order by name limit %(start)s, %(page_len)s
+						'''.format(key=seachfield,cond=''),{
+							'txt': '%' + txt + '%',
+							'start':start, 'page_len':page_len
+						})
