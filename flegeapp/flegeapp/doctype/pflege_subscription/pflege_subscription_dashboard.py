@@ -3,9 +3,9 @@ from frappe import _
 
 def get_data():
 	return {
-		'fieldname': 'pflege_order',
+		'fieldname': 'pflege_subscription',
 		'non_standard_fieldnames': {
-			'Pflege Delivery Note': 'pflege_order',
+			'Pflege Delivery Note': 'subscription',
 		},
 		'transactions': [
 			{

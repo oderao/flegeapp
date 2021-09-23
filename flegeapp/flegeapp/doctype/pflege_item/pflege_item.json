@@ -10,7 +10,7 @@
   "section_break_2",
   "size",
   "price",
-  "column_break_5",
+  "column_break_7",
   "image",
   "available_stock",
   "sets"
@@ -45,11 +45,8 @@
   },
   {
    "fieldname": "section_break_2",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "column_break_5",
-   "fieldtype": "Column Break"
+   "fieldtype": "Section Break",
+   "label": "Item Attributes"
   },
   {
    "default": "0",
@@ -58,12 +55,16 @@
    "hidden": 1,
    "label": "Sets",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-21 11:29:26.584324",
+ "modified": "2021-09-22 17:42:12.219770",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Item",

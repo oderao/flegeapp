@@ -21,7 +21,10 @@
   "height",
   "weight",
   "section_break_10",
+  "print_format",
+  "column_break_18",
   "notification_email",
+  "section_break_20",
   "notification_template"
  ],
  "fields": [
@@ -111,6 +114,7 @@
   },
   {
    "default": "Hi, {{customer_name}},\n\nA new shipment has been created for you.\n\nPlease see details below\n\nRegards,\n\nPflege Care Box",
+   "description": "Available variables are <code>{{label_url}}</code>,<code>{{customer_name}}</code>, <code>{{shipping_label}}</code>",
    "fieldname": "notification_template",
    "fieldtype": "Text Editor",
    "label": "Notification Template"
@@ -120,12 +124,26 @@
    "fieldname": "send_email_notification",
    "fieldtype": "Check",
    "label": "Send Email Notification"
+  },
+  {
+   "fieldname": "print_format",
+   "fieldtype": "Link",
+   "label": "Print Format",
+   "options": "Print Format"
+  },
+  {
+   "fieldname": "column_break_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_20",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-20 11:10:46.995215",
+ "modified": "2021-09-23 06:54:02.718416",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Settings",

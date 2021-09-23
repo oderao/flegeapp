@@ -13,7 +13,7 @@ frappe.ui.form.on('Pflege Order', {
 		
 	},
 	patient_id: function (frm){
-
+		
 		frm.set_query('patient_id', function(frm){
 			return {
 				query:'flegeapp.utils.get_patient_query',

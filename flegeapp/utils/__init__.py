@@ -85,15 +85,16 @@ def create_patient(**args):
                     pflege_order.submit()
                     args.pflege_order = pflege_order
                 #create subscription
-                subscription = create_subscription(pflege_order,carebox=args.care_box)
+                subscription = create_subscription(pflege_order)
                 if subscription:
                     args.subscription = subscription.name
+                    args.patient = patient.name
                     #create delivery_note
                     delivery_note = create_delivery_note(args)  
                     
                     if delivery_note:
                         delivery_note.submit()
-                        delivery_note.patient_id = patient.name
+                        
                         create_shipment(service='standard',delivery_note=delivery_note.as_dict())
                         #update subscription next_subscription date
                         subscription.reload()
@@ -110,7 +111,7 @@ def create_patient(**args):
         frappe.local.response['exc'] = ''
 
 def create_pflege_order(**args):
-    ''' create sales order from patient order '''
+    ''' create pflege sales order from patient order '''
     args = frappe._dict(args)
     try:
         customer_name = args.first_name + ' ' + args.last_name
@@ -126,6 +127,7 @@ def create_pflege_order(**args):
             customer.customer_type = 'Individual'
             customer.save()
         items = []
+        
         for i in args.care_box:
             item = frappe.get_doc({
                 'doctype':'Pflege Order Items',
@@ -141,7 +143,7 @@ def create_pflege_order(**args):
             'order_items':items,
             'order_date':frappe.utils.getdate()
         })
-        pflege_order.insert(ignore_permissions=True)
+        pflege_order.save(ignore_permissions=True)
         return pflege_order
     except:
         frappe.log_error(frappe.get_traceback(),'flege_order_creation_failed')
@@ -182,56 +184,21 @@ def get_patient(**args):
     pass
 
 
-def create_subscription(pflege_order,carebox=[]):
+def create_subscription(pflege_order):
 
     try:
-        if carebox:
-            #create subscription_plan for item if not existing
-            #check if plan is existing
-            subscription_plans = []
-            for box in carebox:
-                if frappe.db.exists('Subscription Plan',{'item':box.get('item')}):
-                    #skip creation of subscription plan
-                    plan = frappe.get_doc('Subscription Plan',{'item':box.get('item')})
-                    subscription_plan_detail = frappe.get_doc({
-                        'doctype':'Subscription Plan Detail',
-                        'plan':plan.name,
-                        'qty':box.get('quantity')
-                    })
-                    subscription_plans.append(subscription_plan_detail)
-                    continue
-            
-                plan_name = 'Buy ' + box.get('item')
-                #add validation for Subscription Plan to validate hook to check if item already exists
-                plan = frappe.get_doc({
-                    'doctype':'Subscription Plan',
-                    'item':box['item'],
-                    'plan_name':plan_name,
-                    'price_determination':'Monthly Rate',
-                    'billing_interval':'Month',
-                    'billing_interval_count':1
-                    
-                })
-                plan.save(ignore_permissions=True)
-
-                subscription_plan_detail = frappe.get_doc({
-                    'doctype':'Subscription Plan Detail',
-                    'plan':plan.name,
-                    'qty':box.get('quantity')
-                })
-               
-                subscription_plans.append(subscription_plan_detail)
-            #create actual subscription
-           
-            subscription = frappe.get_doc({
-                'doctype': 'Pflege Subscription',
-                'party_type':'Pflege Patient',
-                'party':pflege_order.patient_id,
-                'subscription_start_date':pflege_order.order_date,
-                'subscription_end_date':frappe.utils.add_to_date(pflege_order.order_date,years=1),
-            })
-            subscription.save()
-            return subscription
+        #create actual subscription
+        
+        subscription = frappe.get_doc({
+            'doctype': 'Pflege Subscription',
+            'party_type':'Pflege Patient',
+            'party':pflege_order.patient_id,
+            'subscription_start_date':pflege_order.order_date,
+            'subscription_end_date':frappe.utils.add_to_date(pflege_order.order_date,years=1),
+        })
+        subscription.save()
+        frappe.db.set_value('Pflege Patient',pflege_order.patient_id,'has_subscription',1)
+        return subscription
             
     except Exception as e:
         frappe.log_error(frappe.get_traceback(),'create_subscrption_failed')
@@ -245,6 +212,7 @@ def create_delivery_note(args):
             'doctype':'Pflege Delivery Note',
             'subscription':args.subscription,
             'pflege_order':args.pflege_order.name,
+            'patient_id':args.patient,
             'customer':args.pflege_order.customer_name,
             'items':args.pflege_order.order_items,
             'address':args.street_name,
@@ -304,7 +272,9 @@ def create_shipment(service='',delivery_note=None):
         patient_id = frappe.db.get_value('Pflege Order',delivery_note.get('pflege_order'),'patient_id')
         if patient_id:
             patient = frappe.get_doc('Pflege Patient',patient_id)
-
+            if patient.care_box_type:
+                carebox = frappe.get_doc('Pflege Carebox',patient.care_box_type)
+            
             data = {
                 "to": {
                     "company": "",
@@ -317,10 +287,10 @@ def create_shipment(service='',delivery_note=None):
                     "country": 'Germany'
                 },
                 "package": {
-                    "weight": shipcloud.weight,
-                    "length": shipcloud.length,
-                    "width": shipcloud.width,
-                    "height": shipcloud.height,
+                    "weight": carebox.weight or shipcloud.weight,
+                    "length": carebox.length or shipcloud.length,
+                    "width": carebox.width or shipcloud.width,
+                    "height": carebox.height or shipcloud.height,
                     "type": "parcel"
                 },
                 "carrier": shipcloud.carrier,
@@ -342,8 +312,10 @@ def create_shipment(service='',delivery_note=None):
                 if shipcloud_shipment:
                     #update delivery note
                     frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier',shipcloud.carrier)
+                    frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no',shipcloud_shipment.get('carrier_tracking_no'))
                     
                     if service == 'standard':
+                        
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_created',1)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_shipment',shipcloud_shipment.get('shipment_name'))
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
@@ -381,7 +353,7 @@ def create_shipment_data(shipment_data={}):
     shipment.price = shipment_data.get('price')
     shipment.save()
     frappe.db.commit()
-    return {'shipment_name':shipment.name,'shipment_label_url':shipment.label_url}
+    return {'shipment_name':shipment.name,'shipment_label_url':shipment.label_url,'carrier_tracking_no':shipment.carrier_tracking_no}
 
 
 def attach_to_delivery_note(delivery_note,label_url,service):
@@ -455,7 +427,8 @@ def notify_of_shipment(patient_id,shipment):
     if shipment and patient_id:
         if not frappe.db.get_single_value('Shipcloud Settings','send_email_notification'):return
         shipment_doc = frappe.get_doc('Shipcloud Shipment',shipment)
-        if shipment_doc.email_sent:return
+        delivery_note = frappe.db.get_value('Pflege Delivery Note',{'shipcloud_shipment':shipment},'name')
+        #if shipment_doc.email_sent:return
         template = frappe.db.get_single_value('Shipcloud Settings','notification_template')
         notification_email = frappe.db.get_single_value('Shipcloud Settings','notification_email')
         first_name = frappe.db.get_value('Pflege Patient',patient_id,'first_name')
@@ -471,9 +444,10 @@ def notify_of_shipment(patient_id,shipment):
         cc = [notification_email]
         message = frappe.render_template(template,template_dict)
         
+        attachments = [frappe.attach_print('Pflege Delivery Note',delivery_note)]
 
         frappe.sendmail(recipients=recipients,message=message,subject="Subscription/Shipment Notification",
-                        cc=cc)
+                        cc=cc,attachments=attachments)
         frappe.db.set_value('Shipcloud Shipment',shipment,'email_sent',1)
 
     
@@ -491,10 +465,49 @@ def get_carebox_items(carebox):
 
 @frappe.whitelist()
 def get_patient_query(doctype,txt,seachfield,start,page_len,filters):
-	return frappe.db.sql('''SELECT name,first_name,last_name from `tabPflege Patient`
+	
+    return frappe.db.sql('''SELECT name,first_name,last_name from `tabPflege Patient`
 						where `{key}` like %(txt)s {cond}
 						order by name limit %(start)s, %(page_len)s
 						'''.format(key=seachfield,cond=''),{
 							'txt': '%' + txt + '%',
 							'start':start, 'page_len':page_len
 						})
+
+@frappe.whitelist()
+def create_patient_subscription(patient):
+    '''Creation of subscription workflow from the front end
+    Creates Pflege Order --> Pflege Delivery Note ---> Shipment ---> Pflege Subscription'''
+    try:
+        patient = frappe._dict(json.loads(patient))
+        pflege_order = create_pflege_order(**patient)
+        
+        #create subscription is expecting patient_id in the argument
+        pflege_order.patient_id = patient.name
+        subscription = create_subscription(pflege_order)
+        
+        #create delivery note is expecting subscription in the argument
+        patient.subscription = subscription.name
+        patient.pflege_order = pflege_order
+        pflege_order.submit()
+
+        delivery_note = create_delivery_note(patient)
+        #submit created documents and create shipment
+        
+        delivery_note.patient_id = patient.name
+
+        delivery_note.submit()
+        create_shipment(service='standard',delivery_note=delivery_note.as_dict())
+        subscription.reload()
+        subscription.submit()
+
+        #set has subscription in pflege patient
+        frappe.db.set_value('Pflege Patient',patient.name,'has_subscription',1)
+        frappe.db.commit()
+        return {'message':'subscription created successfully',
+                'status':True}
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback())
+        return {'message':'create_subscription_failed',
+                'status':False}
+    

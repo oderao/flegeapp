@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_rename": 1,
  "autoname": "field:carebox_name",
  "creation": "2021-09-21 09:27:46.439261",
  "doctype": "DocType",
@@ -8,7 +9,13 @@
  "field_order": [
   "carebox_name",
   "section_break_2",
-  "carebox_item"
+  "carebox_item",
+  "carebox_attributes_section",
+  "height",
+  "length",
+  "column_break_7",
+  "weight",
+  "width"
  ],
  "fields": [
   {
@@ -26,11 +33,40 @@
    "fieldtype": "Table",
    "label": "Carebox Item",
    "options": "Carebox Items"
+  },
+  {
+   "fieldname": "carebox_attributes_section",
+   "fieldtype": "Section Break",
+   "label": "Carebox Attributes"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Data",
+   "label": "Length"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Data",
+   "label": "Weight"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Data",
+   "label": "Width"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-21 11:29:42.468292",
+ "modified": "2021-09-22 17:44:44.500836",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Carebox",

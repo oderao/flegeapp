@@ -2,12 +2,47 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Pflege Patient', {
-	// refresh: function(frm) {
+	refresh: function(frm) {
+		if (!frm.is_new()) {
+			frm.add_custom_button(__('Create Subscription'),function () {
+				if(frm.doc.has_subscription){
+					frappe.msgprint('Subscription already existing for patient')
+					return false
 
-	// }
+				}
+			frappe.confirm('This will create a subscription for the Patient,Click yes to continue',function(){
+				console.log('Yes Clicked')
+				
+				frappe.call({
+					method:'flegeapp.utils.create_patient_subscription',
+					args:{
+						'patient':frm.doc,
+					},
+					freeze:true,
+					callback:function(r) {
+						console.log(r)
+						if (r.message.status == false){
+							frappe.msgprint('Create Subscription failed')
+							return false
+						}
+						if (r.message.status == true){
+							frappe.msgprint('Subscription Created Successfully')
+						}
+					}
+				})
+				cur_frm.refresh_field('has_subscription')
+				cur_frm.refresh_fields()
+				cur_frm.reload_doc()
+
+				})
+			})	
+			
+		}
+		
+	},
 	care_box_type:function(frm){
 		frm.clear_table('care_box')
-
+		//fill out carebox tables automatically
 		frappe.call({
 			method:"flegeapp.utils.get_carebox_items",
 			args:{
@@ -30,6 +65,6 @@ frappe.ui.form.on('Pflege Patient', {
 			}
 		})
 
-		//fill out carebox tables automatically
+		
 	}
 });

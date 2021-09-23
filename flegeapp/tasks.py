@@ -12,9 +12,7 @@ def run_daily_tasks():
 
         subscriptions = frappe.get_all('Pflege Subscription',filters={'next_subscription_date':frappe.utils.getdate(),
                                     'status':'Active','docstatus':1},fields=['name','party'])
-        print(subscriptions)
         for subscription in subscriptions:
-            print(subscription.name)
             #this will get the latest delivery note linked to a subscription
             if frappe.db.exists('Pflege Delivery Note',{'subscription':subscription.name}):
                 delivery_note = frappe.get_last_doc('Pflege Delivery Note',{'subscription':subscription.name})

@@ -30,6 +30,7 @@
   "shipcloud_shipment",
   "shipcloud_return",
   "data_20",
+  "carrier_tracking_no",
   "carrier",
   "delivery_label",
   "return_label"
@@ -193,12 +194,19 @@
    "fieldtype": "Link",
    "label": "Patient ID",
    "options": "Pflege Patient"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "carrier_tracking_no",
+   "fieldtype": "Data",
+   "label": "Carrier Tracking No",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-21 19:19:52.702533",
+ "modified": "2021-09-21 21:29:37.713270",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",

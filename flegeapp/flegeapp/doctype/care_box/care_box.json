@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_rename": 1,
  "creation": "2021-09-04 16:18:22.841798",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -37,7 +38,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-09-21 11:31:32.136437",
+ "modified": "2021-09-21 21:42:10.858675",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Care Box",

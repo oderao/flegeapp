@@ -100,23 +100,28 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"flegeapp.tasks.all"
-# 	],
-# 	"daily": [
-# 		"flegeapp.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"flegeapp.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"flegeapp.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"flegeapp.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+	# "all": [
+	# 	"flegeapp.tasks.all"
+	# ],
+	# "daily": [
+	# 	"flegeapp.tasks.daily"
+	# ],
+	# "hourly": [
+	# 	"flegeapp.tasks.hourly"
+	# ],
+	# "weekly": [
+	# 	"flegeapp.tasks.weekly"
+	# ]
+	# "monthly": [
+	# 	"flegeapp.tasks.monthly"
+	# ]
+	"cron":{
+		"* 12 * * *":[
+			"flegeapp.tasks.run_daily_tasks"
+		],
+	}
+}
 
 # Testing
 # -------
