@@ -121,7 +121,6 @@ def create_pflege_order(**args):
             customer = frappe.get_doc('Customer',customer_name)
         else:
             customer = frappe.new_doc('Customer')
-            frappe.log_error(customer_name)
             customer.customer_name = customer_name
             customer.customer_group = 'Patient Group'
             customer.customer_type = 'Individual'
@@ -328,7 +327,7 @@ def create_shipment(service='',delivery_note=None):
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'return_label',shipcloud_shipment.get('shipment_label_url'))
 
-                notify_of_shipment(patient_id,shipcloud_shipment.get('shipment_name'))
+                notify_of_shipment(patient_id,shipcloud_shipment.get('shipment_name'),delivery_note=delivery_note.get('name'))
                 return {'message':True}
             else:
                 frappe.log_error(r.content,'shipcloud_api_response')
@@ -421,13 +420,15 @@ def get_items(**args):
         frappe.local.response['exc'] =  ''
         frappe.local.response['_server_messages'] =  ''
         
-def notify_of_shipment(patient_id,shipment):
+def notify_of_shipment(patient_id,shipment,delivery_note=''):
     
     #notify_of new_shipments via email
     if shipment and patient_id:
         if not frappe.db.get_single_value('Shipcloud Settings','send_email_notification'):return
         shipment_doc = frappe.get_doc('Shipcloud Shipment',shipment)
-        delivery_note = frappe.db.get_value('Pflege Delivery Note',{'shipcloud_shipment':shipment},'name')
+        if not delivery_note:
+            delivery_note = frappe.db.get_value('Pflege Delivery Note',{'shipcloud_shipment':shipment},'name')
+
         #if shipment_doc.email_sent:return
         template = frappe.db.get_single_value('Shipcloud Settings','notification_template')
         notification_email = frappe.db.get_single_value('Shipcloud Settings','notification_email')
