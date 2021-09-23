@@ -114,7 +114,7 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nDraft\nIn Progress\nCompleted\nReturn Issued\nCancelled\nClosed"
+   "options": "\nDraft\nSubmitted\nCompleted\nShipped\nShipment Returned\nClosed"
   },
   {
    "fieldname": "dhl_delivery_section",
@@ -206,7 +206,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-21 21:29:37.713270",
+ "modified": "2021-09-23 12:58:41.657271",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",

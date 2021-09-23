@@ -320,12 +320,13 @@ def create_shipment(service='',delivery_note=None):
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_shipment',shipcloud_shipment.get('shipment_name'))
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'delivery_label',shipcloud_shipment.get('shipment_label_url'))
-
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'status','Shipped')
                     if service == 'returns':
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_returned',1)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_return',shipcloud_shipment.get('shipment_name'))
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'return_label',shipcloud_shipment.get('shipment_label_url'))
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'status','Shipment Returned')
 
                 notify_of_shipment(patient_id,shipcloud_shipment.get('shipment_name'),delivery_note=delivery_note.get('name'))
                 return {'message':True}
