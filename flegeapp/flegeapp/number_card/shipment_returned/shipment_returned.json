@@ -1,0 +1,23 @@
+{
+ "aggregate_function_based_on": "",
+ "creation": "2021-09-24 12:42:10.244387",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Pflege Delivery Note",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Pflege Delivery Note\",\"docstatus\",\"=\",\"1\",false],[\"Pflege Delivery Note\",\"status\",\"=\",\"Shipment Returned\",false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Shipment Returned",
+ "modified": "2021-09-24 12:42:10.244387",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Shipment Returned",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Weekly",
+ "type": "Document Type"
+}

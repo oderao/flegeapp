@@ -2,6 +2,7 @@
  "cards_label": "Pflege",
  "category": "Modules",
  "charts": [],
+ "charts_label": "Pflege App Dashboards",
  "creation": "2021-09-01 22:00:00.754580",
  "developer_mode_only": 0,
  "disable_user_customization": 0,
@@ -42,7 +43,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-09-23 13:45:16.249971",
+ "modified": "2021-09-24 13:20:24.874380",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "FLEGE",
@@ -103,6 +104,30 @@
    "label": "Pflege Blog Post",
    "link_to": "Pflege Blog Post",
    "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Contact Form",
+   "link_to": "Pflege Contact Form",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Subscription Dashboard",
+   "link_to": "Pflege Subscription",
+   "type": "Dashboard"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Delivery Note Dashboard",
+   "link_to": "Pflege Delivery Note",
+   "type": "Dashboard"
+  },
+  {
+   "doc_view": "",
+   "label": "Pflege Patient Dashboard",
+   "link_to": "Pflege Patient",
+   "type": "Dashboard"
   }
  ]
 }

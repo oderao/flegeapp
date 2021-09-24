@@ -1,0 +1,31 @@
+{
+ "cards": [
+  {
+   "card": "Actve Subscriptions"
+  },
+  {
+   "card": "Subscriptions on Hold"
+  },
+  {
+   "card": "Cancelled Subscriptions"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Subscription",
+   "width": "Full"
+  }
+ ],
+ "creation": "2021-09-24 12:47:30.978800",
+ "dashboard_name": "Pflege Subscription",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2021-09-24 12:57:59.323718",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Pflege Subscription",
+ "owner": "Administrator"
+}

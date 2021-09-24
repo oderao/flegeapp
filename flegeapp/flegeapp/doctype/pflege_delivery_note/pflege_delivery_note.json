@@ -31,6 +31,7 @@
   "shipcloud_return",
   "data_20",
   "carrier_tracking_no",
+  "carrier_tracking_no_return",
   "carrier",
   "delivery_label",
   "return_label"
@@ -111,10 +112,11 @@
    "label": "Total Number of Items"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "\nDraft\nSubmitted\nCompleted\nShipped\nShipment Returned\nClosed"
+   "options": "\nDraft\nSubmitted\nShipped\nShipment Returned\nShipment Created"
   },
   {
    "fieldname": "dhl_delivery_section",
@@ -142,7 +144,8 @@
    "fieldname": "shipcloud_shipment",
    "fieldtype": "Link",
    "label": "Shipcloud Shipment",
-   "options": "Shipcloud Shipment"
+   "options": "Shipcloud Shipment",
+   "read_only": 1
   },
   {
    "fieldname": "data_20",
@@ -199,14 +202,21 @@
    "allow_on_submit": 1,
    "fieldname": "carrier_tracking_no",
    "fieldtype": "Data",
-   "label": "Carrier Tracking No",
+   "label": "Shipment(Carrier Tracking No)",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "carrier_tracking_no_return",
+   "fieldtype": "Data",
+   "label": "Return(Carrier Tracking No)",
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-23 12:58:41.657271",
+ "modified": "2021-09-24 14:33:40.369378",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Delivery Note",

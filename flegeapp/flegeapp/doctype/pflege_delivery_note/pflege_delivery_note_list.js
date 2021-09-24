@@ -9,6 +9,8 @@ frappe.listview_settings['Pflege Delivery Note'] = {
 			return [__("Shipment Returned"), "grey", "status,=,Shipment Returned"];
 		} else if (doc.status === "Submitted") {
 			return [__("Submitted"), "blue", "status,=,Submitted"];
+		} else if (doc.status === "Shipment Created") {
+			return [__("Shipment Created"), "orange", "status,=,Shipment Create"];
 		}
 	},
 }

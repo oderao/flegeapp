@@ -311,10 +311,9 @@ def create_shipment(service='',delivery_note=None):
                 if shipcloud_shipment:
                     #update delivery note
                     frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier',shipcloud.carrier)
-                    frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no',shipcloud_shipment.get('carrier_tracking_no'))
                     
                     if service == 'standard':
-                        
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no',shipcloud_shipment.get('carrier_tracking_no'))
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_created',1)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_shipment',shipcloud_shipment.get('shipment_name'))
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
@@ -323,6 +322,7 @@ def create_shipment(service='',delivery_note=None):
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'status','Shipped')
                     if service == 'returns':
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_returned',1)
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no',shipcloud_shipment.get('carrier_tracking_no_return')) 
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_return',shipcloud_shipment.get('shipment_name'))
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'return_label',shipcloud_shipment.get('shipment_label_url'))

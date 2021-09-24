@@ -1,0 +1,25 @@
+{
+ "cards": [
+  {
+   "card": "Patients with Subscription"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Patient",
+   "width": "Full"
+  }
+ ],
+ "creation": "2021-09-24 13:11:05.050025",
+ "dashboard_name": "Pflege Patient",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2021-09-24 13:17:31.096528",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Pflege Patient",
+ "owner": "Administrator"
+}

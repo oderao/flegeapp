@@ -1,0 +1,23 @@
+{
+ "aggregate_function_based_on": "",
+ "creation": "2021-09-24 12:56:45.116565",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Pflege Subscription",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Pflege Subscription\",\"status\",\"=\",\"On Hold\",false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Subscriptions on Hold",
+ "modified": "2021-09-24 12:56:45.116565",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Subscriptions on Hold",
+ "owner": "Administrator",
+ "report_function": "Sum",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Weekly",
+ "type": "Document Type"
+}

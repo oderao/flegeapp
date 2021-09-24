@@ -1,0 +1,25 @@
+{
+ "cards": [
+  {
+   "card": "New Loan Applications"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Delivery Note",
+   "width": "Half"
+  }
+ ],
+ "creation": "2021-09-24 11:22:41.130344",
+ "dashboard_name": "Pflege App",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2021-09-24 11:50:12.296526",
+ "modified_by": "Administrator",
+ "module": "Flegeapp",
+ "name": "Pflege App",
+ "owner": "Administrator"
+}
