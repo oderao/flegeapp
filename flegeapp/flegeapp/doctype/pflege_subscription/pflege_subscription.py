@@ -15,14 +15,17 @@ class PflegeSubscription(Document):
 		self.add_date()
 		
 	def add_date(self):
+		date_to_update = self.subscription_start_date
+		if self.next_subscription_date:
+			date_to_update = self.next_subscription_date
 		if self.subscription_interval == 'Monthly':
-			date = frappe.utils.add_to_date(self.subscription_start_date,months=1)
+			date = frappe.utils.add_to_date(date_to_update,months=1)
 		if self.subscription_interval == 'Yearly':
-			date = frappe.utils.add_to_date(self.subscription_start_date,years=1)
+			date = frappe.utils.add_to_date(date_to_update,years=1)
 		if self.subscription_interval == 'Daily':
-			date = frappe.utils.add_to_date(self.subscription_start_date,days=1)
+			date = frappe.utils.add_to_date(date_to_update,days=1)
 		if self.subscription_interval == 'Quarterly':
-			date = frappe.utils.add_to_date(self.subscription_start_date,months=3)
+			date = frappe.utils.add_to_date(date_to_update,months=3)
 		self.next_subscription_date = date
 	
 	def reorder_delivery_note_table(self):

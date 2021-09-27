@@ -3,6 +3,12 @@
 
 frappe.ui.form.on('Pflege Delivery Note', {
 	refresh: function(frm) {
+		frm.set_query('patient_id',function() {
+			return {
+				query:'flegeapp.utils.get_patient_query',
+			}
+		})
+	
 		if(frm.doc.docstatus===1){
 			frm.add_custom_button(__('Create Shipment'), function(){
 				if(frm.doc.shipment_created){
@@ -68,5 +74,13 @@ frappe.ui.form.on('Pflege Delivery Note', {
 			cur_frm.refresh_fields()
 		}
 		
+	},
+	patient_id:function(frm){
+		console.log('err')
+		frm.set_query('patient_id',function() {
+			return {
+				query:'flegeapp.utils.get_patient_query',
+			}
+		})
 	}
 });

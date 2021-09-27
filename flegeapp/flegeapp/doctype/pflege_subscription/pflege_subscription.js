@@ -9,15 +9,14 @@ frappe.ui.form.on('Pflege Subscription', {
 					name: ['in', ['Pflege Patient']]
 				}
 			}
+			
 		});
-
-	},
-	party:function(frm){
 		frm.set_query('party',function() {
 			return {
 				query:'flegeapp.utils.get_patient_query',
 			}
 		})
-	}
+
+	},
 
 });

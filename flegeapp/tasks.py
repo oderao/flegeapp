@@ -15,6 +15,7 @@ def run_daily_tasks():
         for subscription in subscriptions:
             #this will get the latest delivery note linked to a subscription
             if frappe.db.exists('Pflege Delivery Note',{'subscription':subscription.name}):
+                print('yes')
                 delivery_note = frappe.get_last_doc('Pflege Delivery Note',{'subscription':subscription.name})
                 new_delivery_note = frappe.copy_doc(delivery_note)
                 new_delivery_note.shipcloud_shipment = ''
@@ -40,6 +41,7 @@ def run_daily_tasks():
                 table.idx = len(subscription_doc.delivery) + 1
                 table.save()
                 subscription_doc.delivery.append(table)
+                subscription_doc.add_date() #update next date
                 subscription_doc.save()
                 create_shipments(dict(new_delivery_note.as_dict()),subscription.party)
                 frappe.db.commit()

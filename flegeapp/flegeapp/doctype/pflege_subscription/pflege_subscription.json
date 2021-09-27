@@ -109,7 +109,7 @@
   },
   {
    "allow_on_submit": 1,
-   "description": "updates dynamically based on current subscription date",
+   "description": "next date that delivery note will be created\nupdates dynamically based on current subscription date",
    "fieldname": "next_subscription_date",
    "fieldtype": "Date",
    "label": "Next Subscription Date"
@@ -118,7 +118,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2021-09-20 00:07:43.460592",
+ "modified": "2021-09-24 18:50:40.804015",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Subscription",

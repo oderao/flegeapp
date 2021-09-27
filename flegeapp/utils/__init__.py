@@ -268,12 +268,14 @@ def create_shipment(service='',delivery_note=None):
         #get patient from delivery note
         if isinstance(delivery_note,str):
             delivery_note = json.loads(delivery_note)
-        patient_id = frappe.db.get_value('Pflege Order',delivery_note.get('pflege_order'),'patient_id')
+        patient_id = delivery_note.get('patient_id')
         if patient_id:
             patient = frappe.get_doc('Pflege Patient',patient_id)
+            frappe.log_error(patient)
+            carebox = {}
             if patient.care_box_type:
                 carebox = frappe.get_doc('Pflege Carebox',patient.care_box_type)
-            
+
             data = {
                 "to": {
                     "company": "",
@@ -286,10 +288,10 @@ def create_shipment(service='',delivery_note=None):
                     "country": 'Germany'
                 },
                 "package": {
-                    "weight": carebox.weight or shipcloud.weight,
-                    "length": carebox.length or shipcloud.length,
-                    "width": carebox.width or shipcloud.width,
-                    "height": carebox.height or shipcloud.height,
+                    "weight": carebox.get('weight') or shipcloud.weight,
+                    "length": carebox.get('length') or shipcloud.length,
+                    "width": carebox.get('width') or shipcloud.width,
+                    "height": carebox.get('height') or shipcloud.height,
                     "type": "parcel"
                 },
                 "carrier": shipcloud.carrier,
@@ -307,7 +309,7 @@ def create_shipment(service='',delivery_note=None):
             r = requests.post(url,json=data,headers=headers)
             if r.status_code == 200:
                 shipment_data = r.json()
-                shipcloud_shipment = create_shipment_data(shipment_data=shipment_data)
+                shipcloud_shipment = create_shipment_data(shipment_data=shipment_data,service=service)
                 if shipcloud_shipment:
                     #update delivery note
                     frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier',shipcloud.carrier)
@@ -322,7 +324,7 @@ def create_shipment(service='',delivery_note=None):
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'status','Shipped')
                     if service == 'returns':
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_returned',1)
-                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no',shipcloud_shipment.get('carrier_tracking_no_return')) 
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no_return',shipcloud_shipment.get('carrier_tracking_no')) 
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_return',shipcloud_shipment.get('shipment_name'))
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'return_label',shipcloud_shipment.get('shipment_label_url'))
@@ -342,7 +344,7 @@ def generate_random_reference():
     ref = ''.join(random.choices(string.ascii_uppercase + string.digits, k =10))
     return ref
 
-def create_shipment_data(shipment_data={}):
+def create_shipment_data(shipment_data={},service='s'):
 
     if not shipment_data:return
     shipment = frappe.new_doc('Shipcloud Shipment')
@@ -351,6 +353,7 @@ def create_shipment_data(shipment_data={}):
     shipment.tracking_url = shipment_data.get('tracking_url')
     shipment.label_url = shipment_data.get('label_url')
     shipment.price = shipment_data.get('price')
+    shipment.shipment_type = service
     shipment.save()
     frappe.db.commit()
     return {'shipment_name':shipment.name,'shipment_label_url':shipment.label_url,'carrier_tracking_no':shipment.carrier_tracking_no}
@@ -467,7 +470,7 @@ def get_carebox_items(carebox):
 
 @frappe.whitelist()
 def get_patient_query(doctype,txt,seachfield,start,page_len,filters):
-	
+    
     return frappe.db.sql('''SELECT name,first_name,last_name from `tabPflege Patient`
 						where `{key}` like %(txt)s {cond}
 						order by name limit %(start)s, %(page_len)s

@@ -126,6 +126,7 @@
    "label": "Send Email Notification"
   },
   {
+   "description": "print format used for delivery note",
    "fieldname": "print_format",
    "fieldtype": "Link",
    "label": "Print Format",
@@ -143,7 +144,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-23 06:54:02.718416",
+ "modified": "2021-09-27 08:46:39.192944",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Settings",
