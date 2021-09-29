@@ -516,3 +516,25 @@ def create_patient_subscription(patient):
         return {'message':'create_subscription_failed',
                 'status':False}
     
+
+@frappe.whitelist()
+def get_careboxes():
+    """get_all_careboxes and carebox items using frappe.get_doc"""
+    # careboxes = frappe.db.sql(""" SELECT pfc.name,pfc.width,pfc.height,pfc.length,pfc.weight
+    #                             ,itm.item as "item_name",itm.quantity as "item_quantity"
+    #                             from `tabCarebox Items`itm
+    #                             left join `tabPflege Carebox`pfc ON itm.parent = pfc.name
+    #                             GROUP BY itm.parent""",as_dict=True)
+
+    try:
+
+        careboxes = [i.name for i in frappe.get_all('Pflege Carebox')]
+        carebox_data = [frappe.get_doc('Pflege Carebox',i,["name","width","height","length","weight"]).as_dict() for i in careboxes]
+
+        frappe.local.response['http_status_code'] = 200
+        frappe.local.response['message'] = 'Carebox retrieved' 
+        frappe.local.response['data'] = carebox_data
+    except:
+        rappe.local.response['http_status_code'] = 500
+        frappe.local.response['message'] = 'Carebox retrieval failed' 
+        frappe.local.response['data'] = []
