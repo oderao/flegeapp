@@ -43,6 +43,10 @@ frappe.ui.form.on('Pflege Patient', {
 	care_box_type:function(frm){
 		frm.clear_table('care_box')
 		//fill out carebox tables automatically
+		if(!frm.doc.care_box_type){
+
+			return
+		} 
 		frappe.call({
 			method:"flegeapp.utils.get_carebox_items",
 			args:{
