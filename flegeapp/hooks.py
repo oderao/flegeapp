@@ -60,7 +60,7 @@ app_license = "MIT"
 
 # before_install = "flegeapp.install.before_install"
 # after_install = "flegeapp.install.after_install"
-after_migrate = "flegeapp.utils.create_customer_group"
+after_migrate = "flegeapp.utils.create_patient_group"
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config

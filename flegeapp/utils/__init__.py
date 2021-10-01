@@ -552,7 +552,6 @@ def get_careboxes():
 
 def create_patient_group():
      #create patient group
-    print('yes')
     if not frappe.db.exists('Customer Group','Patient Group'):
         custmer_group = frappe.new_doc('Customer Group')
         custmer_group.customer_group_name = 'Patient Group'
