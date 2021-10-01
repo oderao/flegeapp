@@ -119,13 +119,6 @@ def create_pflege_order(**args):
         #check if customer is already existing:
         if frappe.db.exists('Customer',customer_name):
             customer = frappe.get_doc('Customer',customer_name)
-        if not frappe.db.exists('Customer Group',customer_group):
-            #create patient group
-            custmer_group = frappe.new_doc('Customer Group')
-            custmer_group.customer_group_name = 'Patient Group'
-            custmer_group.parent_customer_group = 'All Customer Groups'
-            custmer_group.save()
-            customer_group = custmer_group.name
         else:
             customer = frappe.new_doc('Customer')
             customer.customer_name = customer_name
@@ -556,3 +549,13 @@ def get_careboxes():
         frappe.local.response['http_status_code'] = 500
         frappe.local.response['message'] = 'Carebox retrieval failed' 
         frappe.local.response['data'] = []
+
+def create_patient_group():
+     #create patient group
+    print('yes')
+    if not frappe.db.exists('Customer Group','Patient Group'):
+        custmer_group = frappe.new_doc('Customer Group')
+        custmer_group.customer_group_name = 'Patient Group'
+        custmer_group.parent_customer_group = 'All Customer Groups'
+        custmer_group.save()
+        frappe.db.commit()

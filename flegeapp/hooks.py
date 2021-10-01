@@ -1,4 +1,6 @@
+from frappe.website.doctype.website_theme.website_theme import after_migrate
 from . import __version__ as app_version
+import flegeapp
 
 app_name = "flegeapp"
 app_title = "Flegeapp"
@@ -58,7 +60,7 @@ app_license = "MIT"
 
 # before_install = "flegeapp.install.before_install"
 # after_install = "flegeapp.install.after_install"
-
+after_migrate = "flegeapp.utils.create_customer_group"
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
