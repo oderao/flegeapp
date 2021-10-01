@@ -66,15 +66,16 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "date_of_birth",
-   "fieldtype": "Date",
-   "label": "Date of Birth"
-  },
-  {
    "fieldname": "zip_code",
    "fieldtype": "Data",
    "label": "Zip Code",
    "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
   },
   {
    "collapsible": 1,
@@ -195,7 +196,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-24 14:00:12.647743",
+ "modified": "2021-10-01 10:36:27.306818",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Patient",
