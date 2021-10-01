@@ -258,7 +258,7 @@ def create_shipment(service='',delivery_note=None):
         if not service:
             service = shipcloud.service
         #convert api to b64 encode
-        api_key = shipcloud.get_password(fieldname='api_key').encode('ascii')
+        api_key = shipcloud.get_password(fieldname='api_key',raise_exception=False).encode('ascii')
         api_key = base64.b64encode(api_key)
         api_key = api_key.decode('ascii')
         authorization_key = 'Basic ' + api_key
@@ -336,7 +336,7 @@ def create_shipment(service='',delivery_note=None):
                 frappe.log_error(r.content,'shipcloud_api_response')
                 r.raise_for_status()
                 return {'message':False}
-    except:
+    except :
         frappe.log_error(frappe.get_traceback(),'create_shipment_failed')
 
 def generate_random_reference():

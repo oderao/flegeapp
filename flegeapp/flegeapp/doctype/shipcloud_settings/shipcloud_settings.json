@@ -100,12 +100,15 @@
   {
    "fieldname": "api_key",
    "fieldtype": "Password",
-   "label": "API Key"
+   "in_list_view": 1,
+   "label": "API Key",
+   "reqd": 1
   },
   {
    "fieldname": "api_url",
    "fieldtype": "Data",
-   "label": "API URL"
+   "label": "API URL",
+   "reqd": 1
   },
   {
    "fieldname": "default_company",
@@ -144,7 +147,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-09-27 08:46:39.192944",
+ "modified": "2021-10-01 09:29:04.263373",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Shipcloud Settings",
