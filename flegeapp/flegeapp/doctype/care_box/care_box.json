@@ -16,7 +16,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item",
-   "options": "Pflege Item",
+   "options": "Item",
    "reqd": 1
   },
   {
@@ -38,7 +38,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-09-21 21:42:10.858675",
+ "modified": "2021-10-01 12:22:10.855628",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Care Box",

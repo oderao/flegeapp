@@ -402,18 +402,28 @@ def get_items(**args):
             #check if item exists in the database
             item_name = query_dict['item_name'][0]
             if frappe.db.exists('Item',item_name):
-                item = frappe.get_all('Pflege Item',fields=["item_name","size","price","image","sets"],filters={'name':item_name})
-                
+                item = frappe.get_all('Item',fields=["item_name","standard_rate","thumbnail","website_image"],filters={'disabled':0,'name':item_name})
+                item = item[0]
+                default_warehouse = frappe.db.get_value('Item Default',{'parent':item_name},'default_warehouse')
+                if default_warehouse:
+                    stock_balance = get_stock_balance(item_name,default_warehouse)
+                item['stock'] = stock_balance    
 
                 frappe.local.response['http_status_code'] = 200
                 frappe.local.response['message'] = 'Item retrieved successfully' 
-                frappe.local.response['data'] = item
+                frappe.local.response['data'] = [item]
             else:
                 frappe.local.response['http_status_code'] = 404
                 frappe.local.response['message'] = 'Item not found in Database'
         else:
             #return all items
-            item = frappe.get_all('Pflege Item',fields=["item_name","size","price","image","sets"],)
+            item = frappe.get_all('Item',fields=["item_name","standard_rate","thumbnail","website_image"],filters={'disabled':0,})
+            default_company = frappe.db.get_single_value('Global Defaults','default_company')
+            if default_company:
+                default_warehouse = frappe.db.get_value('Company',default_company,'default_warehouse')
+                if default_warehouse:
+                    for i in item:
+                        i['stock'] = get_stock_balance(i['item_name'],default_warehouse)
             frappe.local.response['http_status_code'] = 200
             frappe.local.response['message'] = 'Items retrieved successfully' 
             frappe.local.response['data'] = item
@@ -459,8 +469,9 @@ def notify_of_shipment(patient_id,shipment,delivery_note=''):
 
 @frappe.whitelist()
 def get_size(item):
-    size = frappe.db.get_value('Pflege Item',item,'size')
-    return size
+    size = frappe.db.get_value('Item Variant Attribute',{'parent':item,'attribute':'Size'},'attribute_value')
+    if size:
+        return size
 
 @frappe.whitelist()
 def get_carebox_items(carebox):
