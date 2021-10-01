@@ -43,7 +43,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-09-24 13:20:24.874380",
+ "modified": "2021-10-01 09:08:05.045582",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "FLEGE",
@@ -128,6 +128,12 @@
    "label": "Pflege Patient Dashboard",
    "link_to": "Pflege Patient",
    "type": "Dashboard"
+  },
+  {
+   "doc_view": "",
+   "label": "Project",
+   "link_to": "Project",
+   "type": "DocType"
   }
  ]
 }

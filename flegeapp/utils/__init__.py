@@ -464,7 +464,7 @@ def get_size(item):
 
 @frappe.whitelist()
 def get_carebox_items(carebox):
-
+    if not carebox:return
     items = frappe.get_all('Carebox Items',{'parent':carebox},['*'])
     return items
 
@@ -535,6 +535,6 @@ def get_careboxes():
         frappe.local.response['message'] = 'Carebox retrieved' 
         frappe.local.response['data'] = carebox_data
     except:
-        rappe.local.response['http_status_code'] = 500
+        frappe.local.response['http_status_code'] = 500
         frappe.local.response['message'] = 'Carebox retrieval failed' 
         frappe.local.response['data'] = []
