@@ -115,14 +115,21 @@ def create_pflege_order(**args):
     args = frappe._dict(args)
     try:
         customer_name = args.first_name + ' ' + args.last_name
-        
+        customer_group = 'Patient Group'
         #check if customer is already existing:
         if frappe.db.exists('Customer',customer_name):
             customer = frappe.get_doc('Customer',customer_name)
+        if not frappe.db.exists('Customer Group',customer_group):
+            #create patient group
+            custmer_group = frappe.new_doc('Customer Group')
+            custmer_group.customer_group_name = 'Patient Group'
+            custmer_group.parent_customer_group = 'All Customer Groups'
+            custmer_group.save()
+            customer_group = custmer_group.name
         else:
             customer = frappe.new_doc('Customer')
             customer.customer_name = customer_name
-            customer.customer_group = 'Patient Group'
+            customer.customer_group = customer_group
             customer.customer_type = 'Individual'
             customer.save()
         items = []
