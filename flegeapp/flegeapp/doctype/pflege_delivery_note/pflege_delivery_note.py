@@ -9,9 +9,12 @@ class PflegeDeliveryNote(Document):
 	def validate(self):
 		self.set_total_number_of_items()
 
-	def on_submit(self):
-		#set status to submitted.
-		self.status = 'Submitted'
+	# def on_submit(self):
+	# 	#set status to submitted.
+	# 	self.status = 'Draft'
+
+	def after_submit(self):
+		self.status = 'Draft'
 
 	def set_total_number_of_items(self):
 		if self.items:

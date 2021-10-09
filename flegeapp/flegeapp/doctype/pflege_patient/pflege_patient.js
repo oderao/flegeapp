@@ -8,10 +8,8 @@ frappe.ui.form.on('Pflege Patient', {
 				if(frm.doc.has_subscription){
 					frappe.msgprint('Subscription already existing for patient')
 					return false
-
 				}
 			frappe.confirm('This will create a subscription for the Patient,Click yes to continue',function(){
-				console.log('Yes Clicked')
 				
 				frappe.call({
 					method:'flegeapp.utils.create_patient_subscription',
@@ -21,6 +19,7 @@ frappe.ui.form.on('Pflege Patient', {
 					freeze:true,
 					callback:function(r) {
 						console.log(r)
+						
 						if (r.message.status == false){
 							frappe.msgprint('Create Subscription failed')
 							return false
@@ -28,15 +27,18 @@ frappe.ui.form.on('Pflege Patient', {
 						if (r.message.status == true){
 							frappe.msgprint('Subscription Created Successfully')
 						}
+						cur_frm.refresh_field('has_subscription')
+						cur_frm.refresh_fields()
+						cur_frm.reload_doc()
 					}
 				})
-				cur_frm.refresh_field('has_subscription')
-				cur_frm.refresh_fields()
-				cur_frm.reload_doc()
-
+				
+				
+				
 				})
-			})	
-			
+			})
+			cur_frm.refresh_fields()	
+			//cur_frm.reload_doc()
 		}
 		
 	},

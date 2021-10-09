@@ -93,9 +93,10 @@ def create_patient(**args):
                     delivery_note = create_delivery_note(args)  
                     
                     if delivery_note:
+                        delivery_note.status = 'Draft' #set status to draft, status is updated manually afterwards
                         delivery_note.submit()
                         
-                        create_shipment(service='standard',delivery_note=delivery_note.as_dict())
+                        #create_shipment(service='standard',delivery_note=delivery_note.as_dict())
                         #update subscription next_subscription date
                         subscription.reload()
                         subscription.submit()
@@ -271,7 +272,6 @@ def create_shipment(service='',delivery_note=None):
         patient_id = delivery_note.get('patient_id')
         if patient_id:
             patient = frappe.get_doc('Pflege Patient',patient_id)
-            frappe.log_error(patient)
             carebox = {}
             if patient.care_box_type:
                 carebox = frappe.get_doc('Pflege Carebox',patient.care_box_type)
@@ -321,7 +321,7 @@ def create_shipment(service='',delivery_note=None):
                         attach_to_delivery_note(delivery_note.get('name'),shipcloud_shipment.get('shipment_label_url'),service)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipcloud_shipment',shipcloud_shipment.get('shipment_name'))
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'delivery_label',shipcloud_shipment.get('shipment_label_url'))
-                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'status','Shipped')
+                        frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'status','Shipment Created')
                     if service == 'returns':
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'shipment_returned',1)
                         frappe.db.set_value('Pflege Delivery Note',delivery_note.get('name'),'carrier_tracking_no_return',shipcloud_shipment.get('carrier_tracking_no')) 
@@ -511,9 +511,10 @@ def create_patient_subscription(patient):
         #submit created documents and create shipment
         
         delivery_note.patient_id = patient.name
-
+        delivery_note.status = 'Draft' #set status to draft, status is updated manually afterwards
         delivery_note.submit()
-        create_shipment(service='standard',delivery_note=delivery_note.as_dict())
+
+        #create_shipment(service='standard',delivery_note=delivery_note.as_dict())
         subscription.reload()
         subscription.submit()
 

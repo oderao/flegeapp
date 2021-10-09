@@ -23,7 +23,6 @@ frappe.ui.form.on('Pflege Delivery Note', {
 					},
 					freeze:true,
 					callback:function(r){
-						console.log(r.message)
 						if (!r.message){
 							frappe.msgprint('Creat Shipment Failed Please Check Error Logs')
 							return false;
