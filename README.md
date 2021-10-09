@@ -1,6 +1,6 @@
 ## Flegeapp
 
-Healthcare App
+Backend for Healthcare Subscription Application built using frappe/erpnext
 
 #### License
 
