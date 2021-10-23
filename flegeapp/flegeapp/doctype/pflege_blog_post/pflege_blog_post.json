@@ -26,7 +26,7 @@
   },
   {
    "fieldname": "content",
-   "fieldtype": "Text Editor",
+   "fieldtype": "Text",
    "label": "Content"
   },
   {
@@ -37,7 +37,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-09-17 14:56:05.733104",
+ "modified": "2021-10-23 23:06:22.531821",
  "modified_by": "Administrator",
  "module": "Flegeapp",
  "name": "Pflege Blog Post",
