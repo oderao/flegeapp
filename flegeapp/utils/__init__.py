@@ -417,7 +417,7 @@ def get_items(**args):
                 frappe.local.response['message'] = 'Item not found in Database'
         else:
             #return all items
-            item = frappe.get_all('Item',fields=["item_name","standard_rate","thumbnail","website_image"],filters={'disabled':0,})
+            item = frappe.get_all('Item',fields=["item_name","standard_rate","website_image"],filters={'disabled':0,})
             default_company = frappe.db.get_single_value('Global Defaults','default_company')
             if default_company:
                 default_warehouse = frappe.db.get_value('Company',default_company,'default_warehouse')
