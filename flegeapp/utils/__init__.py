@@ -402,7 +402,7 @@ def get_items(**args):
             #check if item exists in the database
             item_name = query_dict['item_name'][0]
             if frappe.db.exists('Item',item_name):
-                item = frappe.get_all('Item',fields=["item_name","standard_rate","thumbnail","website_image"],filters={'disabled':0,'name':item_name})
+                item = frappe.get_all('Item',fields=["item_name","standard_rate","website_image"],filters={'disabled':0,'name':item_name})
                 item = item[0]
                 default_warehouse = frappe.db.get_value('Item Default',{'parent':item_name},'default_warehouse')
                 if default_warehouse:
