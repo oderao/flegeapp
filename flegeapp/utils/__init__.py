@@ -37,7 +37,7 @@ def create_patient(**args):
             for box_item in args.care_box:
                 box = frappe.get_doc({
                     'doctype':'Care Box',
-                    'item':box_item['item'],
+                    'item':box_item['item_name'],
                     'quantity':box_item['quantity'],
                     'size':box_item['size']
                 })
