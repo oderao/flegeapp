@@ -469,7 +469,7 @@ def notify_of_shipment(patient_id,shipment,delivery_note=''):
 
 @frappe.whitelist()
 def get_size(item):
-    size = frappe.db.get_value('Item Variant Attribute',{'parent':item,'attribute':'Size'},'attribute_value')
+    size = frappe.db.get_value('Item',{'name':item},'size')
     if size:
         return size
 
