@@ -540,7 +540,7 @@ def get_careboxes():
 
     try:
 
-        careboxes = [i.name for i in frappe.get_all('Pflege Carebox')]
+        careboxes = [i.name for i in frappe.get_all('Pflege Carebox',order_by='name asc')]
         carebox_data = [frappe.get_doc('Pflege Carebox',i,["name","width","height","length","weight"]).as_dict() for i in careboxes]
 
         frappe.local.response['http_status_code'] = 200
