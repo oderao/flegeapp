@@ -23,6 +23,10 @@ frappe.ui.form.on('Carebox Items',{
 					frappe.model.set_value(cdt,cdn,'size',r.message)
 					cur_frm.refresh_field('size')
 					cur_frm.refresh_fields()															
+				} else {
+					frappe.model.set_value(cdt,cdn,'size',"")
+					cur_frm.refresh_field('size')
+					cur_frm.refresh_fields()	
 				}
 			}
 		})
