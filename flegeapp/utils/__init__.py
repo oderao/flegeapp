@@ -131,7 +131,7 @@ def create_pflege_order(**args):
         for i in args.care_box:
             item = frappe.get_doc({
                 'doctype':'Pflege Order Items',
-                'item':i['item'],
+                'item':i['item_name'],
                 'rate':0,
                 'quantity':i['quantity'],
                 'amount':0
